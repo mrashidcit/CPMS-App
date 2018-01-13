@@ -26,7 +26,7 @@ public class GatePassActivity extends AppCompatActivity {
         gatePasses.add(new GatePass("Ali", "03038789873", "hello", 3, "lkjdij kjdijff"));
 
 
-        for(int i= 0; i <= gatePasses.size(); i++) {
+        for(int i= 0; i < gatePasses.size(); i++) {
             Log.v(LOG_TAG, gatePasses.get(i).getPersonName());
         }
 
