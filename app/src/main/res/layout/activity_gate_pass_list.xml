@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="@dimen/gate_pass_person_name_width"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="Name"
+            android:textSize="@dimen/gate_pass_list_item_heading_text_size" />
+
+        <TextView
+            android:layout_width="@dimen/gate_pass_item_name_width"
+            android:layout_height="wrap_content"
+            android:text="Item_Name"
+            android:textSize="@dimen/gate_pass_list_item_heading_text_size" />
+
+        <TextView
+            android:layout_width="@dimen/gate_pass_destination_width"
+            android:layout_height="wrap_content"
+            android:text="Destination"
+            android:textSize="@dimen/gate_pass_list_item_heading_text_size" />
+
+    </LinearLayout>
+
+    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/list_gate_pass"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+</LinearLayout>
+

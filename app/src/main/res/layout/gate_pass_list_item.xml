@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    >
+
+    <TextView
+        android:id="@+id/tv_person_name"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+
+        android:textSize="@dimen/gate_pass_list_item_text_size"
+        tools:text="hello" />
+
+    <TextView
+        android:id="@+id/tv_item_name"
+        android:layout_width="130dp"
+        tools:text="item_name"
+        android:layout_marginLeft="10dp"
+        android:textSize="@dimen/gate_pass_list_item_text_size"
+        android:layout_marginRight="10dp"
+        android:layout_height="wrap_content" />
+
+    <!--<TextView-->
+        <!--android:id="@+id/tv_quantity"-->
+        <!--tools:text="quantity"-->
+
+        <!--android:textSize="22sp"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content" />-->
+
+    <TextView
+        android:id="@+id/tv_destination"
+        tools:text="destination"
+        android:textSize="@dimen/gate_pass_list_item_text_size"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content" />
+
+
+
+
+</LinearLayout>
+

@@ -7,19 +7,23 @@ package com.example.android.chemicalplantmanagementsystem.data.tables;
 public class GatePass {
 
     private String personName;
-    private String contactPhone;
-    private String items;
+    private String itemName;
     private double quantity;
+    private String destination;
+    private String contactPhone;
     private String remarks;
 
+
     // Constructor
-    public GatePass(String personName, String contactPhone, String items, double quantity, String remarks) {
+    public GatePass(String personName, String itemName, double quantity, String destination, String contactPhone, String remarks) {
         this.personName = personName;
-        this.contactPhone = contactPhone;
-        this.items = items;
+        this.itemName = itemName;
         this.quantity = quantity;
+        this.destination = destination;
+        this.contactPhone = contactPhone;
         this.remarks = remarks;
     }
+
 
     // Setter Methods
     public void setPersonName(String personName) {
@@ -30,8 +34,8 @@ public class GatePass {
         this.contactPhone = contactPhone;
     }
 
-    public void setItems(String items) {
-        this.items = items;
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
     }
 
     public void setQuantity(double quantity) {
@@ -40,6 +44,10 @@ public class GatePass {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
     }
 
     // Getter Methods
@@ -51,8 +59,8 @@ public class GatePass {
         return contactPhone;
     }
 
-    public String getItems() {
-        return items;
+    public String getItemName() {
+        return itemName;
     }
 
     public double getQuantity() {
@@ -63,4 +71,7 @@ public class GatePass {
         return remarks;
     }
 
+    public String getDestination() {
+        return destination;
+    }
 }
