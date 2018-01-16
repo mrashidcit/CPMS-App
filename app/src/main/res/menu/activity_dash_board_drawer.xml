@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
@@ -10,28 +11,27 @@
 
         <item
             android:id="@+id/nav_production"
-            android:title="Productions"
-            />
+            android:title="Productions" />
 
-        <!--<item-->
-            <!--android:id="@+id/nav_production_create"-->
-            <!--android:title="&#45;&#45;&#45;&#45; Create" />-->
+        <item
+            android:id="@+id/nav_production_create"
+            android:title="---- Create" />
 
-        <!--<item-->
-            <!--android:id="@+id/nav_production_approve"-->
-            <!--android:title="&#45;&#45;&#45;&#45; Approve" />-->
-        <!--<item-->
-            <!--android:id="@+id/nav_production_complete"-->
-            <!--android:title="&#45;&#45;&#45;&#45; Complete" />-->
-        <!--<item-->
-            <!--android:id="@+id/nav_gatepass"-->
-            <!--android:title="Gate Pass" />-->
-        <!--<item-->
-            <!--android:id="@+id/nav_gatepass_view"-->
-            <!--android:title="-&#45;&#45; View" />-->
-        <!--<item-->
-            <!--android:id="@+id/nav_gatepass_create"-->
-            <!--android:title="-&#45;&#45; Create" />-->
+        <item
+            android:id="@+id/nav_production_approve"
+            android:title="---- Approve" />
+        <item
+            android:id="@+id/nav_production_complete"
+            android:title="---- Complete" />
+        <item
+            android:id="@+id/nav_gatepass"
+            android:title="Gate Pass" />
+        <item
+            android:id="@+id/nav_gatepass_view"
+            android:title="--- View" />
+        <item
+            android:id="@+id/nav_gatepass_create"
+            android:title="--- Create" />
 
         <item
             android:id="@+id/nav_notification"
@@ -57,3 +57,14 @@
     </item>
 
 </menu>
+
+    <!--<menu xmlns:android="http://schemas.android.com/apk/res/android"--><!--xmlns:tools="http://schemas.android.com/tools"--><!--tools:showIn="navigation_view">-->
+
+    <!--<group android:checkableBehavior="single">--><!--<item--><!--android:id="@+id/nav_camera"--><!--android:icon="@drawable/ic_menu_camera"--><!--android:title="Import" />--><!--<item--><!--android:id="@+id/nav_gallery"--><!--android:icon="@drawable/ic_menu_gallery"--><!--android:title="Gallery" />--><!--<item--><!--android:id="@+id/nav_slideshow"--><!--android:icon="@drawable/ic_menu_slideshow"--><!--android:title="Slideshow" />--><!--<item--><!--android:id="@+id/nav_manage"--><!--android:icon="@drawable/ic_menu_manage"--><!--android:title="Tools" />--><!--</group>-->
+
+    <!--<item android:title="Communicate">--><!--<menu>--><!--<item--><!--android:id="@+id/nav_share"--><!--android:icon="@drawable/ic_menu_share"--><!--android:title="Share" />--><!--<item--><!--android:id="@+id/nav_send"--><!--android:icon="@drawable/ic_menu_send"--><!--android:title="Send" />--><!--</menu>--><!--</item>-->
+
+    <!--</menu>-->
+
+
+
