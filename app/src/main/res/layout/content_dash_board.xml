@@ -8,4 +8,12 @@
     tools:context="com.example.android.chemicalplantmanagementsystem.DashBoard"
     tools:showIn="@layout/app_bar_dash_board">
 
+    <LinearLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:orientation="horizontal" />
+
+
 </android.support.constraint.ConstraintLayout>

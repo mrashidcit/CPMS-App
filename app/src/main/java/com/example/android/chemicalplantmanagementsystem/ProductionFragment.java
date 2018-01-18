@@ -1,8 +1,12 @@
 package com.example.android.chemicalplantmanagementsystem;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.example.android.chemicalplantmanagementsystem.data.tables.Production;
@@ -11,25 +15,32 @@ import com.example.android.chemicalplantmanagementsystem.data.tables.adapters.Pr
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductionActivity extends AppCompatActivity {
 
-    private static final String LOG_TAG = ProductionActivity.class.getSimpleName();
+/**
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+
+ * to handle interaction events.
+ * Use the {@link ProductionFragment} factory method to
+ * create an instance of this fragment.
+ */
+public class ProductionFragment extends Fragment {
+
     private ProductionAdapter mAdapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_production_list);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View productionView = inflater.inflate(R.layout.fragment_production, container, false);
 
+        ListView productionListView = (ListView) productionView.findViewById(R.id.list_production);
 
-        ListView productionListView = (ListView) findViewById(R.id.list_production);
-
-        mAdapter = new ProductionAdapter(this, new ArrayList<Production>());
+        mAdapter = new ProductionAdapter(getContext(), new ArrayList<Production>());
 
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
         productionListView.setAdapter(mAdapter);
-
 
         List<Production> productionList = new ArrayList<Production>();
         productionList.add(new Production("oli38783", "The name", 1));
@@ -40,19 +51,15 @@ public class ProductionActivity extends AppCompatActivity {
         productionList.add(new Production("oli38783", "The name", 1));
         productionList.add(new Production("oli38783", "The name", 1));
 
-//        for (int i = 0; i < productionList.size(); i++) {
-//            Log.v(LOG_TAG, productionList.get(i).getProductionCode() + " , "
-//                    + productionList.get(i).getProductionName() + " , "
-//                    + productionList.get(i).getProductionStatus()
-//            );
-
         mAdapter.clear();
         mAdapter.addAll(productionList);
 
 
 
 
-     }
+        return productionView;
+    }
+
 
 
 }

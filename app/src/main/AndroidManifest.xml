@@ -36,9 +36,6 @@
         <activity android:name=".GatePassActivity">
 
         </activity>
-        <activity android:name=".ProductionActivity">
-
-        </activity>
     </application>
 
 </manifest>
