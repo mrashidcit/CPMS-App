@@ -27,7 +27,7 @@
             android:title="---- Completed" />
 
         <item
-            android:id="@+id/nav_getepass"
+            android:id="@+id/nav_gatepass"
             android:title="Gate Pass" />
 
         <item

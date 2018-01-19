@@ -1,38 +1,48 @@
 package com.example.android.chemicalplantmanagementsystem;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.example.android.chemicalplantmanagementsystem.data.tables.GatePass;
 import com.example.android.chemicalplantmanagementsystem.data.tables.adapters.GatePassAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class GatePassActivity extends AppCompatActivity {
 
-    private final static String LOG_TAG = GatePassActivity.class.getSimpleName();
+/**
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * to handle interaction events.
+ * create an instance of this fragment.
+ */
+public class GatePassFragment extends Fragment {
+
+    private final static String LOG_TAG = GatePassFragment.class.getSimpleName();
 
     // Adapter for the list of GatePasses
     private GatePassAdapter mAdapter;
 
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_gate_pass_list);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View gatePassView = inflater.inflate(R.layout.fragment_gate_pass, container, false);
 
-        // Find a reference to the {@link ListView} in the layout
-        ListView gatePassListView = (ListView) findViewById(R.id.list_gate_pass);
+        // Find a reference to the {@link Listview} in the layout
+        ListView gatePassListView = (ListView) gatePassView.findViewById(R.id.list_gate_pass);
 
-        mAdapter = new GatePassAdapter(this, new ArrayList<GatePass>());
+        mAdapter = new GatePassAdapter(getContext(), new ArrayList<GatePass>());
 
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
         gatePassListView.setAdapter(mAdapter);
-
-
 
         ArrayList<GatePass> gatePasses = new ArrayList<GatePass>();
         gatePasses.add(new GatePass("Ali", "Sooda",8,"Lahore","03328738738", "Good"));
@@ -53,5 +63,28 @@ public class GatePassActivity extends AppCompatActivity {
 
 
 
+
+
+        return gatePassView;
     }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

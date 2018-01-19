@@ -43,6 +43,22 @@ public class DashBoard extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        // Start Daily Production Fragment
+        // Create new Fragment and transaction
+        Fragment newFragment = new DailyProductionFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        // Replacte is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack
+        transaction.replace(R.id.fragment_container, newFragment);
+        transaction.addToBackStack(null);
+
+        // Commit the transaction
+        transaction.commit();
+
+
     }
 
 //    @Override
@@ -96,12 +112,31 @@ public class DashBoard extends AppCompatActivity
             // Commit the transaction
             transaction.commit();
 
+        } else if (id == R.id.nav_gatepass) {
+            // Create new Fragment and transaction
+            Fragment newFragment = new GatePassFragment();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-//            Intent productionIntent = new Intent(this, ProductionActivity.class);
-//            startActivity(productionIntent);
+            // Replace is in the fragment_container view with this fragment,
+            // and add the transaction to the back stack
+            transaction.replace(R.id.fragment_container, newFragment);
+            transaction.addToBackStack(null);
 
-        } else if (id == R.id.nav_gatepass_view) {
+            // Commit the transaction
+            transaction.commit();
 
+        } else if (id == R.id.nav_daily_production) {
+            // Create new Fragment and transaction
+            Fragment newFragment = new DailyProductionFragment();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+            // Replacte is in the fragment_container view with this fragment,
+            // and add the transaction to the back stack
+            transaction.replace(R.id.fragment_container, newFragment);
+            transaction.addToBackStack(null);
+
+            // Commit the transaction
+            transaction.commit();
         }
 
 //        if (id == R.id.nav_camera) {
