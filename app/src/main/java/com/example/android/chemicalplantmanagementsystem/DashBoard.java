@@ -45,12 +45,27 @@ public class DashBoard extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
+        /*
         // Start Daily Production Fragment
         // Create new Fragment and transaction
         Fragment newFragment = new DailyProductionFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         // Replacte is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack
+        transaction.replace(R.id.fragment_container, newFragment);
+        transaction.addToBackStack(null);
+
+        // Commit the transaction
+        transaction.commit();
+        */
+
+        // Starting GatePass Fragment
+        // Create new Fragment and transaction
+        Fragment newFragment = new GatePassFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        // Replace is in the fragment_container view with this fragment,
         // and add the transaction to the back stack
         transaction.replace(R.id.fragment_container, newFragment);
         transaction.addToBackStack(null);
@@ -74,7 +89,7 @@ public class DashBoard extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.dash_board, menu);
+//        getMenuInflater().inflate(R.menu.dash_board, menu);
         return true;
     }
 

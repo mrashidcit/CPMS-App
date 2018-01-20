@@ -22,6 +22,8 @@
 
     <string name="action_settings">Settings</string>
 
+    <style name="action_add_new">New</style>
+
 
     <!-- Dashboard Strings -->
     <string name="nav_daily_production_label">Daily Production</string>
@@ -40,7 +42,7 @@
         <item>Neptune</item>
 
     </string-array>
-
+    <string name="title_activity_generate_gate_pass">Generate Gate Pass</string>
 
 
 </resources>

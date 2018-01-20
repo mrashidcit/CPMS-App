@@ -14,24 +14,28 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-
         <activity
             android:name=".DashBoard"
             android:label="@string/title_activity_dash_board"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
+
         </activity>
-
         <activity android:name=".MainActivity" />
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login" >
-
+            android:label="@string/title_activity_login"></activity>
+        <activity
+            android:name=".GenerateGatePassActivity"
+            android:label="@string/title_activity_generate_gate_pass"
+            android:theme="@style/AppTheme"
+            android:parentActivityName=".DashBoard"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
 
 
         </activity>

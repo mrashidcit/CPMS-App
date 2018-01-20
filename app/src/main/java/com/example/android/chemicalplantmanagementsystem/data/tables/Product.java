@@ -23,6 +23,8 @@ public class Product {
     private long unitId;
     private Timestamp createdAt;
 
+
+
     public Product(long id, String productCode, String name, int deleteStatus, String description) {
         this.id = id;
         this.productCode = productCode;

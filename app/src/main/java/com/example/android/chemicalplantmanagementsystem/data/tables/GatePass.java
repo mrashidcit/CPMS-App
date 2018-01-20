@@ -1,11 +1,14 @@
 package com.example.android.chemicalplantmanagementsystem.data.tables;
 
+import java.util.ArrayList;
+
 /**
  * Created by Rashid Saleem on 13-Jan-18.
  */
 
 public class GatePass {
 
+    private long id;
     private String personName;
     private String itemName;
     private double quantity;
@@ -13,8 +16,22 @@ public class GatePass {
     private String contactPhone;
     private String remarks;
 
+    private ArrayList<Product> products;
+    private ArrayList<Material> materials;
 
-    // Constructor
+    /* Constructor */
+
+    public GatePass() {
+    }
+
+    public GatePass(long id, String personName, String itemName, double quantity, String destination) {
+        this.id = id;
+        this.personName = personName;
+        this.itemName = itemName;
+        this.quantity = quantity;
+        this.destination = destination;
+    }
+
     public GatePass(String personName, String itemName, double quantity, String destination, String contactPhone, String remarks) {
         this.personName = personName;
         this.itemName = itemName;
@@ -26,6 +43,12 @@ public class GatePass {
 
 
     // Setter Methods
+
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public void setPersonName(String personName) {
         this.personName = personName;
     }
@@ -50,7 +73,20 @@ public class GatePass {
         this.destination = destination;
     }
 
+    public void setProducts(ArrayList<Product> products) {
+        this.products = products;
+    }
+
+    public void setMaterials(ArrayList<Material> materials) {
+        this.materials = materials;
+    }
+
     // Getter Methods
+
+    public long getId() {
+        return id;
+    }
+
     public String getPersonName() {
         return personName;
     }
@@ -73,5 +109,13 @@ public class GatePass {
 
     public String getDestination() {
         return destination;
+    }
+
+    public ArrayList<Product> getProducts() {
+        return products;
+    }
+
+    public ArrayList<Material> getMaterials() {
+        return materials;
     }
 }
