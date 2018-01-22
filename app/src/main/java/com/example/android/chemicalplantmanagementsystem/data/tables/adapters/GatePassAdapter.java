@@ -20,6 +20,8 @@ import java.util.List;
 
 public class GatePassAdapter extends ArrayAdapter<GatePass> {
 
+//public class GatePassAdapter extends <GatePass> {
+
     public GatePassAdapter(@NonNull Context context, List<GatePass> gatePasses) {
         super(context, 0, gatePasses);
     }

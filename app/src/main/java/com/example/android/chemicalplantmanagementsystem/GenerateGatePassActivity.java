@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -19,6 +20,8 @@ import com.example.android.chemicalplantmanagementsystem.data.tables.Product;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class GenerateGatePassActivity extends AppCompatActivity {
 
@@ -31,6 +34,8 @@ public class GenerateGatePassActivity extends AppCompatActivity {
     private Spinner mMaterialSpinnerView;
     private EditText mMaterialQtyView;
     private Button mAddMaterialButtonView;
+    private ListView mMaterialListView;
+    private ListView mProductListView;
 
     private Button mSaveButtonView;
 
@@ -39,10 +44,12 @@ public class GenerateGatePassActivity extends AppCompatActivity {
     private ArrayList<Product> mProductList;
     private ArrayList<Material> mMaterialList;
 
-    private ArrayAdapter<String> mProductAdapter;
     private ArrayAdapter<String> mMaterialAdapter;
+    private ArrayAdapter<String> mProductAdapter;
 
-
+    // Material and Products passed in this GatePass
+    private HashMap<Integer, Integer> mCurrentGatePassMaterial;
+    private HashMap<Integer, Integer> mCurrentGatePassProduct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +64,8 @@ public class GenerateGatePassActivity extends AppCompatActivity {
         mMaterialSpinnerView = (Spinner) findViewById(R.id.sp_material);
         mMaterialQtyView = (EditText) findViewById(R.id.et_material_qty);
         mAddMaterialButtonView = (Button) findViewById(R.id.btn_add_material);
+        mMaterialListView = (ListView) findViewById(R.id.list_material);
+        mProductListView = (ListView) findViewById(R.id.list_products);
 
         // Initializing Product List and Adapters
         mProductList = new ArrayList<Product>();
@@ -65,22 +74,19 @@ public class GenerateGatePassActivity extends AppCompatActivity {
         mMaterialAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item);
 
 
-
+        // Setting Listener for the buttons
         mSaveButtonView.setOnClickListener(mSaveClickListener);
+        mAddMaterialButtonView.setOnClickListener(mAddMaterialClickListener);
 
         generateFakeData();
-
         mMaterialSpinnerView.setAdapter(mMaterialAdapter);
-
-
-
-
-
 
     }
 
 
-
+    /**
+     * Click Listener for Save Button
+     */
     private View.OnClickListener mSaveClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -100,11 +106,46 @@ public class GenerateGatePassActivity extends AppCompatActivity {
         }
     };
 
+    /**
+     * Click Listener for Add Material
+     */
+    private View.OnClickListener mAddMaterialClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            int index = mMaterialSpinnerView.getSelectedItemPosition();
+            int qty = Integer.parseInt(mMaterialQtyView.getText().toString());
+            Material currentMaterial = mMaterialList.get(index);
+
+            mCurrentGatePassMaterial = new HashMap<Integer, Integer>();
+
+            mCurrentGatePassMaterial.put(currentMaterial.getId(), qty);
+
+            Log.v(LOG_TAG,  "(material, qty) = ("  + currentMaterial.getName() +
+                    " , " + mCurrentGatePassMaterial.get(currentMaterial.getId()) + " )"
+
+            );
+            Log.v(LOG_TAG, "MapSize = " + mCurrentGatePassMaterial.size());
+
+
+        }
+    };
+
+    /**
+     * Click Listener to Add Product
+     */
+    private View.OnClickListener mAddProductClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+
+//            Product currentProduct = mProductList.get()
+        }
+    };
+
+
+
     public void generateFakeData() {
-
-
-
-
         // Fake Products
         mProductList.add(new Product(12, "ad333", "Mineral Water", 0, "Pure May be Fresh Water"));
         mProductList.add(new Product(13, "ad333", "Fast Food", 0, "Pure May be Fresh Water"));
@@ -119,25 +160,23 @@ public class GenerateGatePassActivity extends AppCompatActivity {
         mMaterialList.add(new Material(14, "ed39", "Oxegyn", 0, "for water purfication"));
 
 
-        for (int i = 0; i <  mProductList.size(); i++) {
-            mMaterialAdapter.add(mProductList.get(i).getName().toString());
+        for (int i = 0; i <  mMaterialList.size(); i++) {
+            mMaterialAdapter.add(mMaterialList.get(i).getName().toString());
         }
-
 
 //        mProductAdapter.addAll(mProductList);
 
 
     }
 
-
-
     public void saveGatePass() {
-
-
 
     }
 
 
+    public void addMaterial() {
 
+
+    }
 
 }
