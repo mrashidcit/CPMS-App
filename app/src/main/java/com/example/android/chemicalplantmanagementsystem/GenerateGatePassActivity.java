@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.example.android.chemicalplantmanagementsystem.data.tables.Material;
 import com.example.android.chemicalplantmanagementsystem.data.tables.Product;
+import com.example.android.chemicalplantmanagementsystem.generategatepass.MaterialAdapter;
 
 import org.w3c.dom.Text;
 
@@ -51,6 +52,8 @@ public class GenerateGatePassActivity extends AppCompatActivity {
     private HashMap<Integer, Integer> mCurrentGatePassMaterial;
     private HashMap<Integer, Integer> mCurrentGatePassProduct;
 
+    private MaterialAdapter mCurrentGatePassMaterialAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +75,11 @@ public class GenerateGatePassActivity extends AppCompatActivity {
         mMaterialList = new ArrayList<Material>();
         mProductAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item);
         mMaterialAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item);
+        mCurrentGatePassMaterial = new HashMap<Integer, Integer>();
+        mCurrentGatePassMaterial.put(1, 23);
+        mCurrentGatePassMaterialAdapter = new MaterialAdapter(this, mCurrentGatePassMaterial);
+
+        mMaterialListView.setAdapter(mCurrentGatePassMaterialAdapter);
 
 
         // Setting Listener for the buttons
@@ -82,8 +90,6 @@ public class GenerateGatePassActivity extends AppCompatActivity {
         mMaterialSpinnerView.setAdapter(mMaterialAdapter);
 
     }
-
-
     /**
      * Click Listener for Save Button
      */
@@ -117,8 +123,6 @@ public class GenerateGatePassActivity extends AppCompatActivity {
             int qty = Integer.parseInt(mMaterialQtyView.getText().toString());
             Material currentMaterial = mMaterialList.get(index);
 
-            mCurrentGatePassMaterial = new HashMap<Integer, Integer>();
-
             mCurrentGatePassMaterial.put(currentMaterial.getId(), qty);
 
             Log.v(LOG_TAG,  "(material, qty) = ("  + currentMaterial.getName() +
@@ -126,6 +130,8 @@ public class GenerateGatePassActivity extends AppCompatActivity {
 
             );
             Log.v(LOG_TAG, "MapSize = " + mCurrentGatePassMaterial.size());
+
+            mMaterialListView.setAdapter(mCurrentGatePassMaterialAdapter);
 
 
         }
