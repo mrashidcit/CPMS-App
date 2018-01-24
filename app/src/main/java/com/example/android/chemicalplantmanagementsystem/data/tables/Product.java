@@ -1,7 +1,5 @@
 package com.example.android.chemicalplantmanagementsystem.data.tables;
 
-import android.os.health.TimerStat;
-
 import java.sql.Timestamp;
 
 /**
@@ -11,7 +9,7 @@ import java.sql.Timestamp;
 public class Product {
 
     // Data Members of the Object
-    private long id;
+    private int id;
     private String productCode;
     private String name;
     private int deleteStatus;
@@ -25,7 +23,7 @@ public class Product {
 
 
 
-    public Product(long id, String productCode, String name, int deleteStatus, String description) {
+    public Product(int id, String productCode, String name, int deleteStatus, String description) {
         this.id = id;
         this.productCode = productCode;
         this.name = name;
@@ -43,7 +41,7 @@ public class Product {
     // Setter Methods
 
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -90,7 +88,7 @@ public class Product {
     // Getter Methods
 
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 

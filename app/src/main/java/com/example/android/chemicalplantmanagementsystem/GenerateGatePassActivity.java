@@ -1,10 +1,7 @@
 package com.example.android.chemicalplantmanagementsystem;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -12,22 +9,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.example.android.chemicalplantmanagementsystem.data.tables.Material;
 import com.example.android.chemicalplantmanagementsystem.data.tables.Product;
 import com.example.android.chemicalplantmanagementsystem.generategatepass.MaterialAdapter;
-
-import org.w3c.dom.Text;
+import com.example.android.chemicalplantmanagementsystem.generategatepass.ProductAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class GenerateGatePassActivity extends AppCompatActivity {
 
 
-    private static final String LOG_TAG = "MainActivity";
+    private static final String LOG_TAG = GenerateGatePassActivity.class.getSimpleName();
     private EditText mPersonNameView;
     private EditText mContactPhoneView;
     private EditText mDestinationView;
@@ -36,7 +30,12 @@ public class GenerateGatePassActivity extends AppCompatActivity {
     private EditText mMaterialQtyView;
     private Button mAddMaterialButtonView;
     private ListView mMaterialListView;
+    private Spinner mProductSpinnerView;
+    private EditText mProductQtyView;
+    private Button mAddProductButtonView;
     private ListView mProductListView;
+
+
 
     private Button mSaveButtonView;
 
@@ -45,14 +44,17 @@ public class GenerateGatePassActivity extends AppCompatActivity {
     private ArrayList<Product> mProductList;
     private ArrayList<Material> mMaterialList;
 
+    // These Adapters are for Spinner
     private ArrayAdapter<String> mMaterialAdapter;
     private ArrayAdapter<String> mProductAdapter;
 
     // Material and Products passed in this GatePass
-    private HashMap<Integer, Integer> mCurrentGatePassMaterial;
-    private HashMap<Integer, Integer> mCurrentGatePassProduct;
+    private HashMap<Integer, Integer> mCurrentGatePassMaterialHashMap;
+    private HashMap<Integer, Integer> mCurrentGatePassProductHashMap;
 
+    // Adapters for ListView
     private MaterialAdapter mCurrentGatePassMaterialAdapter;
+    private ProductAdapter mCurrentGatePassProductAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,9 @@ public class GenerateGatePassActivity extends AppCompatActivity {
         mMaterialQtyView = (EditText) findViewById(R.id.et_material_qty);
         mAddMaterialButtonView = (Button) findViewById(R.id.btn_add_material);
         mMaterialListView = (ListView) findViewById(R.id.list_material);
+        mProductSpinnerView = (Spinner) findViewById(R.id.sp_product);
+        mProductQtyView = (EditText) findViewById(R.id.et_product_qty);
+        mAddProductButtonView = (Button) findViewById(R.id.btn_add_product);
         mProductListView = (ListView) findViewById(R.id.list_products);
 
         // Initializing Product List and Adapters
@@ -75,19 +80,39 @@ public class GenerateGatePassActivity extends AppCompatActivity {
         mMaterialList = new ArrayList<Material>();
         mProductAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item);
         mMaterialAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item);
-        mCurrentGatePassMaterial = new HashMap<Integer, Integer>();
-        mCurrentGatePassMaterial.put(1, 23);
-        mCurrentGatePassMaterialAdapter = new MaterialAdapter(this, mCurrentGatePassMaterial);
 
+        // Generating Fake Data
+        generateFakeData();
+
+
+        mCurrentGatePassMaterialHashMap = new HashMap<Integer, Integer>();
+        mCurrentGatePassMaterialHashMap.put(12, 23);
+        mCurrentGatePassMaterialHashMap.put(13, 23);
+        mCurrentGatePassMaterialHashMap.put(14, 23);
+        mCurrentGatePassMaterialAdapter = new MaterialAdapter(this, mCurrentGatePassMaterialHashMap, mMaterialList);
         mMaterialListView.setAdapter(mCurrentGatePassMaterialAdapter);
+
+        mCurrentGatePassProductHashMap = new HashMap<Integer, Integer>();
+        mCurrentGatePassProductHashMap.put(12, 3);
+        mCurrentGatePassProductHashMap.put(13, 3);
+        mCurrentGatePassProductHashMap.put(14, 3);
+        mCurrentGatePassProductHashMap.put(15, 3);
+        mCurrentGatePassProductHashMap.put(16, 3);
+        mCurrentGatePassProductAdapter = new ProductAdapter(this, mCurrentGatePassProductHashMap, mProductList);
+        mProductListView.setAdapter(mCurrentGatePassProductAdapter);
+
+
+
 
 
         // Setting Listener for the buttons
         mSaveButtonView.setOnClickListener(mSaveClickListener);
         mAddMaterialButtonView.setOnClickListener(mAddMaterialClickListener);
+        mAddProductButtonView.setOnClickListener(mAddProductClickListener);
 
-        generateFakeData();
+        // Setting Spinner Adapters
         mMaterialSpinnerView.setAdapter(mMaterialAdapter);
+        mProductSpinnerView.setAdapter(mProductAdapter);
 
     }
     /**
@@ -107,6 +132,10 @@ public class GenerateGatePassActivity extends AppCompatActivity {
                     + " )"
             );
 
+            Log.v(LOG_TAG, "(TotalMaterial, TotalProducts) = ( " + mCurrentGatePassMaterialHashMap.size() + " , " +
+                    mCurrentGatePassProductHashMap.size() + " )"
+            );
+
 
 
         }
@@ -123,15 +152,15 @@ public class GenerateGatePassActivity extends AppCompatActivity {
             int qty = Integer.parseInt(mMaterialQtyView.getText().toString());
             Material currentMaterial = mMaterialList.get(index);
 
-            mCurrentGatePassMaterial.put(currentMaterial.getId(), qty);
+            mCurrentGatePassMaterialHashMap.put(currentMaterial.getId(), qty);
 
-            Log.v(LOG_TAG,  "(material, qty) = ("  + currentMaterial.getName() +
-                    " , " + mCurrentGatePassMaterial.get(currentMaterial.getId()) + " )"
+//            Log.v(LOG_TAG,  "(material, qty) = ("  + currentMaterial.getName() +
+//                    " , " + mCurrentGatePassMaterialHashMap.get(currentMaterial.getId()) + " )"
+//
+//            );
+//            Log.v(LOG_TAG, "MapSize = " + mCurrentGatePassMaterialHashMap.size());
 
-            );
-            Log.v(LOG_TAG, "MapSize = " + mCurrentGatePassMaterial.size());
-
-            mMaterialListView.setAdapter(mCurrentGatePassMaterialAdapter);
+            mCurrentGatePassMaterialAdapter.notifyDataSetChanged();
 
 
         }
@@ -144,8 +173,16 @@ public class GenerateGatePassActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
 
+            int index = mProductSpinnerView.getSelectedItemPosition();
+            int qty = Integer.parseInt(mProductQtyView.getText().toString());
+            Product currentProduct = mProductList.get(index);
+            int key = currentProduct.getId();
 
-//            Product currentProduct = mProductList.get()
+            mCurrentGatePassProductHashMap.put(key, qty);
+
+            mCurrentGatePassProductAdapter.notifyDataSetChanged();
+
+
         }
     };
 
@@ -170,7 +207,9 @@ public class GenerateGatePassActivity extends AppCompatActivity {
             mMaterialAdapter.add(mMaterialList.get(i).getName().toString());
         }
 
-//        mProductAdapter.addAll(mProductList);
+        for (int i = 0; i < mProductList.size(); i++) {
+            mProductAdapter.add(mProductList.get(i).getName().toString());
+        }
 
 
     }
