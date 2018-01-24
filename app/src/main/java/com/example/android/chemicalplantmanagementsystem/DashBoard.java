@@ -62,16 +62,16 @@ public class DashBoard extends AppCompatActivity
 
         // Starting GatePass Fragment
         // Create new Fragment and transaction
-        Fragment newFragment = new GatePassFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-        // Replace is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack
-        transaction.replace(R.id.fragment_container, newFragment);
-        transaction.addToBackStack(null);
-
-        // Commit the transaction
-        transaction.commit();
+//        Fragment newFragment = new GatePassFragment();
+//        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//
+//        // Replace is in the fragment_container view with this fragment,
+//        // and add the transaction to the back stack
+//        transaction.replace(R.id.fragment_container, newFragment);
+//        transaction.addToBackStack(null);
+//
+//        // Commit the transaction
+//        transaction.commit();
 
 
     }
@@ -152,6 +152,12 @@ public class DashBoard extends AppCompatActivity
 
             // Commit the transaction
             transaction.commit();
+        } else if (id == R.id.nav_gatepass_create) {
+            Intent generateGatePassIntent = new Intent(this, GenerateGatePassActivity.class);
+
+//            generateGatePassIntent.setAction(Intent.ACTION_VIEW);
+            startActivity(generateGatePassIntent);
+
         }
 
 //        if (id == R.id.nav_camera) {
