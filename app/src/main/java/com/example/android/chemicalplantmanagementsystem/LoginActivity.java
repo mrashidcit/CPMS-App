@@ -29,6 +29,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.android.chemicalplantmanagementsystem.data.tables.OAuthRequestData;
+import com.example.android.chemicalplantmanagementsystem.data.tables.providers.ProductionContract;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -296,10 +299,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
+        private final int mClientId;
+        private final String mClientSecret;
+        private final String mGrantType;
         private final String mEmail;
         private final String mPassword;
+        private final String mScope;
+
+        private final OAuthRequestData mOAuthRequestData;
+
+
 
         UserLoginTask(String email, String password) {
+            mOAuthRequestData = new OAuthRequestData(email, password);
+            
+            mClientId =
             mEmail = email;
             mPassword = password;
         }
