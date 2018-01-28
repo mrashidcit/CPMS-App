@@ -23,7 +23,7 @@ public class UserContract {
          * Unique ID number
          * Type: INTEGER
          */
-        public final static String _ID = BaseColumns._ID;
+        public final static String _ID = "id";
 
         /**
          * Name of the user
@@ -74,7 +74,7 @@ public class UserContract {
          * Delete_Status of user in case of user account is Deleted by Admin
          * Type: INTEGER
          */
-        public final static String COLUMN_USER_DELETE_STATUS = "";
+        public final static String COLUMN_USER_DELETE_STATUS = "delete_status";
 
         /**
          * Type: timestamp

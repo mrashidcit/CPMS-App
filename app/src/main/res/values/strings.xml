@@ -25,24 +25,31 @@
     <style name="action_add_new">New</style>
 
 
+    <!-- Host Address of the Website -->
+
+    <!-- For Nazim Mobile Hotspot-->
+    <!--<string name="host_address">192.168.43.206:8000</string>-->
+
+    <!-- For Zong Device Ethernet -->
+    <string name="host_address">192.168.0.136:8000</string>
+
+
     <!-- Dashboard Strings -->
     <string name="nav_daily_production_label">Daily Production</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <string-array name="planets_array">
-        <item>Mercury</item>
-        <item>Venus</item>
-        <item>Earth</item>
-        <item>Mars</item>
-        <item>Jupiter</item>
-        <item>Saturn</item>
-        <item>Uranus</item>
-        <item>Neptune</item>
 
-    </string-array>
     <string name="title_activity_generate_gate_pass">Generate Gate Pass</string>
+
+    <!-- Key for User Infor in SharedPreferences-->
+    <string name="pref_username_key">username</string>
+    <string name="pref_password_key">password</string>
+    <string name="pref_token_type_key">token_type</string>
+    <string name="pref_expires_in_key">expires_in</string>
+    <string name="pref_access_token_key">access_token</string>
+    <string name="pref_refresh_token_key">refresh_token</string>
 
 
 </resources>

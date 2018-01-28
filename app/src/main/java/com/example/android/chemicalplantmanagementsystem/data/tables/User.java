@@ -1,10 +1,20 @@
 package com.example.android.chemicalplantmanagementsystem.data.tables;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
+
+import com.example.android.chemicalplantmanagementsystem.data.tables.providers.UserContract;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by Rashid Saleem on 25-Jan-18.
  */
 
 public class User {
+    private static final String LOG_TAG = User.class.getSimpleName() ;
     private int id;
     private String name;
     private String password;
@@ -107,4 +117,42 @@ public class User {
     public int getDeleteStatus() {
         return deleteStatus;
     }
+
+    public static JSONObject readUserFromJson(String userInfoJSONString, Context context) throws JSONException {
+        JSONObject parent = new JSONObject(userInfoJSONString.toString());
+//        JSONObject userInfoJSON = parent;
+        JSONObject userInfoJSON = parent.getJSONObject("user");
+
+        // UserInfo Variables
+//                        int id = userInfoJSON.getInt(UserEntry._ID);
+        int id = userInfoJSON.getInt(UserContract.UserEntry._ID);
+        String name = userInfoJSON.getString(UserContract.UserEntry.COLUMN_USER_NAME);
+        String email = userInfoJSON.getString(UserContract.UserEntry.COLUMN_USER_EMAIL);
+        int active  = userInfoJSON.getInt(UserContract.UserEntry.COLUMN_USER_ACTIVE);
+        String avatar  = userInfoJSON.getString(UserContract.UserEntry.COLUMN_USER_AVATAR);
+        int branchId = userInfoJSON.getInt(UserContract.UserEntry.COLUMN_USER_BRANCH_ID);
+        int departmentId = userInfoJSON.getInt(UserContract.UserEntry.COLUMN_USER_DEPARTMENT_ID);
+        int companyId = userInfoJSON.getInt(UserContract.UserEntry.COLUMN_USER_COMPANY_ID);
+        int deleteStatus = userInfoJSON.getInt(UserContract.UserEntry.COLUMN_USER_DELETE_STATUS);
+        String createdAt = userInfoJSON.getString(UserContract.UserEntry.COLUMN_USER_CREATED_AT);
+        String updatedAt = userInfoJSON.getString(UserContract.UserEntry.COLUMN_USER_UPDATED_AT);
+
+        SharedPreferences userInfoPref =  context.getSharedPreferences(UserContract.UserEntry.TABLE_NAME, 0);
+        SharedPreferences.Editor prefEdit = userInfoPref.edit();
+        prefEdit.putInt(UserContract.UserEntry._ID, id);
+        prefEdit.putString(UserContract.UserEntry.COLUMN_USER_NAME, name);
+        prefEdit.putString(UserContract.UserEntry.COLUMN_USER_EMAIL, email);
+        prefEdit.putInt(UserContract.UserEntry.COLUMN_USER_ACTIVE, active);
+        prefEdit.putString(UserContract.UserEntry.COLUMN_USER_AVATAR, avatar);
+        prefEdit.putInt(UserContract.UserEntry.COLUMN_USER_BRANCH_ID, branchId);
+        prefEdit.putInt(UserContract.UserEntry.COLUMN_USER_DEPARTMENT_ID, departmentId);
+        prefEdit.putInt(UserContract.UserEntry.COLUMN_USER_COMPANY_ID, companyId);
+        prefEdit.putInt(UserContract.UserEntry.COLUMN_USER_DEPARTMENT_ID, deleteStatus);
+        prefEdit.putString(UserContract.UserEntry.COLUMN_USER_CREATED_AT, createdAt);
+        prefEdit.putString(UserContract.UserEntry.COLUMN_USER_UPDATED_AT, updatedAt);
+        prefEdit.commit();
+
+        return userInfoJSON;
+    }
+
 }

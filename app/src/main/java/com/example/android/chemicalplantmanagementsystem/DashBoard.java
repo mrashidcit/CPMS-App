@@ -26,6 +26,19 @@ public class DashBoard extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Create new Fragmet and transaction
+        Fragment newFragment = new NewProductionFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        // Replace in the fragment_container view with this fragment,
+        // and add the transaction to the back stack
+        transaction.replace(R.id.fragment_container, newFragment);
+        transaction.addToBackStack(null);
+
+        // Commit the transaction
+        transaction.commit();
+
+
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -152,6 +165,20 @@ public class DashBoard extends AppCompatActivity
 
             // Commit the transaction
             transaction.commit();
+
+        } else if (id == R.id.nav_production_create) {
+            // Create new Fragmet and transaction
+            Fragment newFragment = new NewProductionFragment();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+            // Replace in the fragment_container view with this fragment,
+            // and add the transaction to the back stack
+            transaction.replace(R.id.fragment_container, newFragment);
+            transaction.addToBackStack(null);
+
+            // Commit the transaction
+            transaction.commit();
+
         } else if (id == R.id.nav_gatepass_create) {
             Intent generateGatePassIntent = new Intent(this, GenerateGatePassActivity.class);
 
