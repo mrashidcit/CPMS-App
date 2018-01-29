@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.example.android.chemicalplantmanagementsystem.R;
 import com.example.android.chemicalplantmanagementsystem.data.tables.providers.UserContract;
+import com.example.android.chemicalplantmanagementsystem.data.tables.providers.UserContract.UserEntry;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,8 +27,14 @@ public class User {
     private int companyId;
     private int deleteStatus;
 
+    private Context mContext;
+    private SharedPreferences mSharedPref;
+
     // Default Contructor
-    public User() {
+    public User(Context context) {
+        mContext = context;
+        mSharedPref = context.getSharedPreferences(UserEntry.TABLE_NAME, 0);
+
 
     }
 
@@ -83,11 +91,11 @@ public class User {
 
     // Getter Methods
     public int getId() {
-        return id;
+        return mSharedPref.getInt(UserEntry._ID, 0);
     }
 
     public String getName() {
-        return name;
+        return mSharedPref.getString(UserEntry.COLUMN_USER_NAME, "");
     }
 
     public String getPassword() {
@@ -95,7 +103,7 @@ public class User {
     }
 
     public int getActive() {
-        return active;
+        return mSharedPref.getInt(UserEntry.COLUMN_USER_ACTIVE, 0);
     }
 
     public String getAvatar() {
@@ -103,19 +111,25 @@ public class User {
     }
 
     public int getBranchId() {
-        return branchId;
+        return mSharedPref.getInt(UserEntry.COLUMN_USER_BRANCH_ID, 0);
     }
 
     public int getDepartmentId() {
-        return departmentId;
+        return mSharedPref.getInt(UserEntry.COLUMN_USER_DEPARTMENT_ID, 0);
     }
 
     public int getCompanyId() {
-        return companyId;
+        return mSharedPref.getInt(UserEntry.COLUMN_USER_COMPANY_ID, 0);
     }
 
     public int getDeleteStatus() {
-        return deleteStatus;
+        return mSharedPref.getInt(UserEntry.COLUMN_USER_DELETE_STATUS, 0);
+    }
+
+    public String getToken() {
+        String access_token = mSharedPref.getString(mContext.getString(R.string.pref_access_token_key), "");
+
+        return  "Bearer " + access_token;
     }
 
     public static JSONObject readUserFromJson(String userInfoJSONString, Context context) throws JSONException {

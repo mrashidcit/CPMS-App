@@ -1,77 +1,95 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    tools:context="com.example.android.chemicalplantmanagementsystem.NewProductionFragment">
 
-    <android.support.design.widget.TextInputLayout
+    >
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        tools:context="com.example.android.chemicalplantmanagementsystem.NewProductionFragment">
 
-        <EditText
-            android:id="@+id/tv_production_name"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Name"
-            tools:text="hello" />
+            android:layout_marginTop="10dp">
+
+            <EditText
+                android:id="@+id/tv_production_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Name"
+                tools:text="Name" />
 
 
-    </android.support.design.widget.TextInputLayout>
+        </android.support.design.widget.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
-
-        <EditText
-            android:id="@+id/tv_production_description"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:hint="Description"
-            android:inputType="textMultiLine"
-            tools:text="Write Here ...." />
-
-
-    </android.support.design.widget.TextInputLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Products: " />
+            android:layout_marginTop="10dp">
 
-        <android.support.v7.widget.AppCompatSpinner
-            android:id="@+id/sp_products"
-            style="@style/Base.Widget.AppCompat.Spinner"
-            android:layout_width="150dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"></android.support.v7.widget.AppCompatSpinner>
+            <EditText
+                android:id="@+id/tv_production_description"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:hint="Description"
+                android:inputType="textMultiLine"
+                tools:text="Write Here ...." />
+
+
+        </android.support.design.widget.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Products: " />
+
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/sp_products"
+                style="@style/Base.Widget.AppCompat.Spinner"
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"></android.support.v7.widget.AppCompatSpinner>
+
+            <Button
+                android:id="@+id/btn_add_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add"
+                android:textAllCaps="false" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_products_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+        </LinearLayout>
 
         <Button
-            android:id="@+id/btn_add_more"
-            android:layout_width="wrap_content"
+            android:layout_marginTop="10dp"
+            android:id="@+id/btn_save"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Add"
-            android:textAllCaps="false" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_products_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
+            android:text="Save"
+            android:textAllCaps="false"
+            />
 
 
     </LinearLayout>
 
 
-</LinearLayout>
+</ScrollView>
+

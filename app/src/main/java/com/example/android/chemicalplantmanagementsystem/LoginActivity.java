@@ -421,7 +421,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                     // Store data In Preference
 //                    storeData(responseJsonObject);
-                    SharedPreferences pref = getSharedPreferences(PREFS_NAME, 0);
+                    SharedPreferences pref = getSharedPreferences(UserEntry.TABLE_NAME, 0);
                     SharedPreferences.Editor prefEditor = pref.edit();
                     prefEditor.putString(getString(R.string.pref_username_key), mEmail);
                     prefEditor.putString(getString(R.string.pref_password_key), mPassword);

@@ -26,27 +26,6 @@ public class DashBoard extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Create new Fragmet and transaction
-        Fragment newFragment = new NewProductionFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-        // Replace in the fragment_container view with this fragment,
-        // and add the transaction to the back stack
-        transaction.replace(R.id.fragment_container, newFragment);
-        transaction.addToBackStack(null);
-
-        // Commit the transaction
-        transaction.commit();
-
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action",  null).show();
-//            }
-//        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -58,33 +37,19 @@ public class DashBoard extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        /*
-        // Start Daily Production Fragment
+
+        // Starting GatePass Fragment
         // Create new Fragment and transaction
-        Fragment newFragment = new DailyProductionFragment();
+        Fragment newFragment = new GatePassFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        // Replacte is in the fragment_container view with this fragment,
+        // Replace is in the fragment_container view with this fragment,
         // and add the transaction to the back stack
         transaction.replace(R.id.fragment_container, newFragment);
         transaction.addToBackStack(null);
 
         // Commit the transaction
         transaction.commit();
-        */
-
-        // Starting GatePass Fragment
-        // Create new Fragment and transaction
-//        Fragment newFragment = new GatePassFragment();
-//        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-//
-//        // Replace is in the fragment_container view with this fragment,
-//        // and add the transaction to the back stack
-//        transaction.replace(R.id.fragment_container, newFragment);
-//        transaction.addToBackStack(null);
-//
-//        // Commit the transaction
-//        transaction.commit();
 
 
     }

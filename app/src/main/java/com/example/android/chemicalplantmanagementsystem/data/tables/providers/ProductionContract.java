@@ -1,6 +1,7 @@
 package com.example.android.chemicalplantmanagementsystem.data.tables.providers;
 
 import android.provider.BaseColumns;
+import android.util.Log;
 
 /**
  * Created by Rashid Saleem on 25-Jan-18.
@@ -28,7 +29,13 @@ public class ProductionContract {
         /**
          * Type: TEXT
          */
+        public final static String COLUMN_NAME = "name";
+
+        /**
+         * Type: TEXT
+         */
         public final static String COLUMN_PRODUCTION_CODE = "production_code";
+
 
         /**
          * Type: INTEGER
@@ -74,6 +81,18 @@ public class ProductionContract {
          * Type: TIMESTAMP
          */
         public final static String COLUMN_UPDATED_AT = "updated_at";
+
+        public final static String generateProductionCode(){
+            String possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            String productionCode = "";
+
+            for (int i = 0; i < 11; i++) {
+                productionCode += possible.charAt((int) Math.floor(Math.random() * possible.length()));
+            }
+//            Log.v(LOG_TAG, "ProductionCode = " + productionCode);
+
+            return productionCode;
+        }
 
 
     }

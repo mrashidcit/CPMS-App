@@ -1,5 +1,13 @@
 package com.example.android.chemicalplantmanagementsystem.data.tables;
 
+import android.util.Log;
+
+import com.example.android.chemicalplantmanagementsystem.network.QueryUtils;
+
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -8,6 +16,7 @@ import java.util.ArrayList;
 
 public class GatePass {
 
+    private static final String LOG_TAG = GatePass.class.getSimpleName();
     private long id;
     private String personName;
     private String itemName;
@@ -118,4 +127,28 @@ public class GatePass {
     public ArrayList<Material> getMaterials() {
         return materials;
     }
+
+
+    // Fetch GatePasses from Network
+    public static final String fetchGatePasses(String requestUrl) {
+        // Create URL object
+        URL url = QueryUtils.createUrl(requestUrl);
+        // Perform HTTP request to the URL and receive a JSON response back
+        String jsonResponse = null;
+        try {
+            jsonResponse = QueryUtils.makeHttpRequest(url, "");
+
+            Log.v(LOG_TAG, "jsonResponse = " + jsonResponse);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        return jsonResponse;
+
+    }
+
+
 }
+

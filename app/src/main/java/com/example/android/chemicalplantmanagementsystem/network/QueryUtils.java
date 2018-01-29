@@ -1,6 +1,6 @@
-package com.example.android.chemicalplantmanagementsystem.net;
+package com.example.android.chemicalplantmanagementsystem.network;
 
-import android.renderscript.ScriptGroup;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -15,7 +15,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.List;
 
 /**
  * Created by Rashid Saleem on 24-Jan-18.
@@ -40,25 +39,26 @@ public final class QueryUtils {
      * @param requestUrl
      * @return
      */
-    public static String fetchUserData(String requestUrl) {
+    public static String fetchUserData(String requestUrl, String token) {
         // Create URL object
         URL url = createUrl(requestUrl);
 
         // Perform HTTP request to the URL and receive a JSON response back
         String jsonResponse = null;
         try {
-            jsonResponse = makeHttpRequest(url);
+            jsonResponse = makeHttpRequest(url, token);
 
         } catch (IOException e) {
             Log.e(LOG_TAG, "Problem making the HTTP request.", e);
         }
 
         // Extract relevant fields from the JSON response
-        String testMessage = extractUserFromJson(jsonResponse);
+//        String testMessage = extractUserFromJson(jsonResponse);
 
-        return testMessage;
+        return jsonResponse;
 
     }
+
 
     /**
      * Returns new URL object from the given string URL.
@@ -78,36 +78,45 @@ public final class QueryUtils {
     /**
      * Make an HTTP request to the given URL and return a String as the response.
      */
-    private static String makeHttpRequest(URL url) throws IOException {
-        String jsonResponse = "";
+    public static String makeHttpRequest(URL url, String token) throws IOException {
+
+
+        String jsonString = "";
 
         // If the URL is null, then return early.
         if (url == null) {
-            return jsonResponse;
+            return jsonString;
         }
 
-        HttpURLConnection urlConnection = null;
+        HttpURLConnection conn = null;
         InputStream inputStream = null;
+
         try {
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setReadTimeout(10000 /* milliseconds */);
-            urlConnection.setConnectTimeout(15000 /* milliseconds */);
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000 /* milliseconds */);
+            conn.setConnectTimeout(15000 /* milliseconds */);
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Authorization", token);
+//            conn.setRequestProperty("Authorization", token);
+
+            conn.connect();
+
+
 
             // If the request was successful (response code 200),
             // then read the input stream and parse the response.
-            if (urlConnection.getResponseCode() == 200) {
-                inputStream = urlConnection.getInputStream();
-                jsonResponse = readFromStream(inputStream);
+            if (conn.getResponseCode() == 200) {
+                inputStream = conn.getInputStream();
+                jsonString = readFromStream(inputStream);
             } else {
-                Log.e(LOG_TAG, "Error response code: " + urlConnection.getResponseCode());
+                Log.e(LOG_TAG, "Error response code: " + conn.getResponseCode());
             }
         } catch (IOException e) {
             Log.e(LOG_TAG, "Problem retrieving the User Result", e);
         } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
+            if (conn != null) {
+                conn.disconnect();
             }
             if (inputStream != null) {
                 // Closing the input stream could throw and IOException which is why
@@ -115,7 +124,7 @@ public final class QueryUtils {
                 inputStream.close();
             }
         }
-        return jsonResponse;
+        return jsonString;
     }
 
     /**
@@ -125,7 +134,7 @@ public final class QueryUtils {
      * @return
      * @throws IOException
      */
-    private static String readFromStream(InputStream inputStream) throws IOException {
+    public static String readFromStream(InputStream inputStream) throws IOException {
         StringBuilder output = new StringBuilder();
         if (inputStream != null) {
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));

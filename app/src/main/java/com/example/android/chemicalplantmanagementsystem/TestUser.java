@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.example.android.chemicalplantmanagementsystem.net.UserLoader;
+import com.example.android.chemicalplantmanagementsystem.network.UserLoader;
 
 public class TestUser extends AppCompatActivity
                    implements LoaderManager.LoaderCallbacks<String> {
