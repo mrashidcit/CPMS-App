@@ -4,20 +4,24 @@ import android.util.Log;
 
 import com.example.android.chemicalplantmanagementsystem.network.QueryUtils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Rashid Saleem on 13-Jan-18.
  */
 
-public class GatePass {
+public class GatePass implements Serializable {
 
     private static final String LOG_TAG = GatePass.class.getSimpleName();
-    private long id;
+    private int id;
     private String personName;
     private String itemName;
     private double quantity;
@@ -33,7 +37,22 @@ public class GatePass {
     public GatePass() {
     }
 
-    public GatePass(long id, String personName, String itemName, double quantity, String destination) {
+    public GatePass(int id, String personName , String contactPhone, String destination, String remarks) {
+        this.id = id;
+        this.personName = personName;
+        this.contactPhone = contactPhone;
+        this.destination = destination;
+        this.remarks = remarks;
+
+        this.itemName = "";
+        this.quantity = 0;
+        this.products = new ArrayList<Product>();
+        this.materials = new ArrayList<Material>();
+    }
+
+
+
+    public GatePass(int id, String personName, String itemName, double quantity, String destination) {
         this.id = id;
         this.personName = personName;
         this.itemName = itemName;
@@ -54,7 +73,7 @@ public class GatePass {
     // Setter Methods
 
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -92,7 +111,7 @@ public class GatePass {
 
     // Getter Methods
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
@@ -130,13 +149,13 @@ public class GatePass {
 
 
     // Fetch GatePasses from Network
-    public static final String fetchGatePasses(String requestUrl) {
+    public static final HashMap<Integer, GatePass> fetchGatePasses(String requestUrl) {
         // Create URL object
         URL url = QueryUtils.createUrl(requestUrl);
         // Perform HTTP request to the URL and receive a JSON response back
         String jsonResponse = null;
         try {
-            jsonResponse = QueryUtils.makeHttpRequest(url, "");
+            jsonResponse = QueryUtils.makeHttpRequest(url, User.TOKEN);
 
             Log.v(LOG_TAG, "jsonResponse = " + jsonResponse);
 
@@ -144,8 +163,39 @@ public class GatePass {
             e.printStackTrace();
         }
 
+        JSONArray gatePasses  = null;
+        JSONObject gatePass;
 
-        return jsonResponse;
+        HashMap<Integer, GatePass> gatePassHashMap = new HashMap<Integer, GatePass>();
+
+        try {
+            gatePasses = new JSONArray(jsonResponse);
+
+            for (int i = 0; i < gatePasses.length(); i++) {
+                gatePass = gatePasses.getJSONObject(i);
+
+                int id = gatePass.getInt("id");
+                String personName = gatePass.getString("person_name");
+                String contactPhone = gatePass.getString("contact_phone");
+                String destination = gatePass.getString("destination");
+                String remarks = gatePass.getString("remarks");
+
+                GatePass gatePassObject = new GatePass(id, personName, contactPhone, destination, remarks);
+
+                gatePassHashMap.put(id, gatePassObject);
+
+                Log.v("GatePassObject", "(id, personName, contactPhone, remarks ) = (" + id + " , " +
+                        personName + " , " + contactPhone + " , " + remarks + " )"
+                );
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+
+        return gatePassHashMap;
 
     }
 

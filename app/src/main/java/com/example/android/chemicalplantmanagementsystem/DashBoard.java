@@ -2,11 +2,8 @@ package com.example.android.chemicalplantmanagementsystem;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -15,6 +12,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.example.android.chemicalplantmanagementsystem.fragments.DailyProductionFragment;
+import com.example.android.chemicalplantmanagementsystem.fragments.GatePassFragment;
+import com.example.android.chemicalplantmanagementsystem.fragments.NewProductionFragment;
+import com.example.android.chemicalplantmanagementsystem.fragments.ProductionFragment;
 
 public class DashBoard extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -46,10 +48,14 @@ public class DashBoard extends AppCompatActivity
         // Replace is in the fragment_container view with this fragment,
         // and add the transaction to the back stack
         transaction.replace(R.id.fragment_container, newFragment);
+
         transaction.addToBackStack(null);
 
         // Commit the transaction
         transaction.commit();
+        // Changing Title of the Activity
+
+        getSupportActionBar().setTitle("Gate Passes");
 
 
     }
@@ -91,8 +97,10 @@ public class DashBoard extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        String title = "";
 
         if (id == R.id.nav_production) {
+
             // Create new fragment and transaction
             Fragment newFragment = new ProductionFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -104,6 +112,10 @@ public class DashBoard extends AppCompatActivity
 
             // Commit the transaction
             transaction.commit();
+
+            // Changing Title of the Activity
+            title = "Productions";
+            getSupportActionBar().setTitle(title);
 
         } else if (id == R.id.nav_gatepass) {
             // Create new Fragment and transaction
@@ -117,6 +129,9 @@ public class DashBoard extends AppCompatActivity
 
             // Commit the transaction
             transaction.commit();
+            // Changing Title of the Activity
+            title = "Gate Passes";
+            getSupportActionBar().setTitle(title);
 
         } else if (id == R.id.nav_daily_production) {
             // Create new Fragment and transaction

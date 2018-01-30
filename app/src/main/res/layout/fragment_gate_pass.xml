@@ -18,7 +18,7 @@
         <TextView
             android:layout_width="@dimen/gate_pass_item_name_width"
             android:layout_height="wrap_content"
-            android:text="Item_Name"
+            android:text="Phone No."
             android:textSize="@dimen/gate_pass_list_item_heading_text_size" />
 
         <TextView

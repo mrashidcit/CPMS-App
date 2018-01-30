@@ -1,4 +1,4 @@
-package com.example.android.chemicalplantmanagementsystem;
+package com.example.android.chemicalplantmanagementsystem.fragments;
 
 
 import android.os.Bundle;
@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.android.chemicalplantmanagementsystem.R;
 import com.example.android.chemicalplantmanagementsystem.data.tables.DailyProduction;
 import com.example.android.chemicalplantmanagementsystem.data.tables.Product;
 

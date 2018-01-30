@@ -1,7 +1,5 @@
-package com.example.android.chemicalplantmanagementsystem;
+package com.example.android.chemicalplantmanagementsystem.fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.example.android.chemicalplantmanagementsystem.R;
 import com.example.android.chemicalplantmanagementsystem.data.tables.Production;
 import com.example.android.chemicalplantmanagementsystem.data.tables.adapters.ProductionAdapter;
 

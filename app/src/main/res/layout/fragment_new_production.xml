@@ -11,7 +11,7 @@
         android:orientation="vertical"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        tools:context="com.example.android.chemicalplantmanagementsystem.NewProductionFragment">
+        tools:context="com.example.android.chemicalplantmanagementsystem.fragments.NewProductionFragment">
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"

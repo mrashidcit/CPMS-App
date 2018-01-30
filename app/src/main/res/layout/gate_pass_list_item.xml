@@ -18,9 +18,9 @@
         tools:text="hello" />
 
     <TextView
-        android:id="@+id/tv_item_name"
+        android:id="@+id/tv_phone_no"
         android:layout_width="130dp"
-        tools:text="item_name"
+        tools:text="phone_no"
         android:layout_marginLeft="10dp"
         android:textSize="@dimen/gate_pass_list_item_text_size"
         android:layout_marginRight="10dp"

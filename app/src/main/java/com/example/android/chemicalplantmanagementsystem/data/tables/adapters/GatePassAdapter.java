@@ -39,13 +39,13 @@ public class GatePassAdapter extends ArrayAdapter<GatePass> {
 
             // Find the TextView with view ID tv_person_name
             TextView personNameView = (TextView) listItemView.findViewById(R.id.tv_person_name);
-            TextView itemNameView = (TextView) listItemView.findViewById(R.id.tv_item_name);
+            TextView phoneNoView = (TextView) listItemView.findViewById(R.id.tv_phone_no);
 //            TextView quantityView = (TextView) listItemView.findViewById(R.id.tv_quantity);
             TextView destinationView = (TextView) listItemView.findViewById(R.id.tv_destination);
 
             // Display Info in views
             personNameView.setText(currentGatePass.getPersonName());
-            itemNameView.setText(currentGatePass.getItemName());
+            phoneNoView.setText(currentGatePass.getContactPhone());
 //            quantityView.setText(currentGatePass.getQuantity() + "");
             destinationView.setText(currentGatePass.getDestination());
 
@@ -53,6 +53,10 @@ public class GatePassAdapter extends ArrayAdapter<GatePass> {
 
         return listItemView;
     }
+
+
+
+
 }
 
 

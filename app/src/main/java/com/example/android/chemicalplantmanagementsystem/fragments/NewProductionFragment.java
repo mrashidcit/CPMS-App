@@ -1,12 +1,8 @@
-package com.example.android.chemicalplantmanagementsystem;
+package com.example.android.chemicalplantmanagementsystem.fragments;
 
-import android.accessibilityservice.FingerprintGestureController;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
-import android.sax.RootElement;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.ViewUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +15,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.chemicalplantmanagementsystem.R;
 import com.example.android.chemicalplantmanagementsystem.data.tables.Product;
 import com.example.android.chemicalplantmanagementsystem.data.tables.User;
 import com.example.android.chemicalplantmanagementsystem.data.tables.providers.ProductContract.ProductEntry;
@@ -27,7 +24,6 @@ import com.example.android.chemicalplantmanagementsystem.data.tables.providers.P
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.HashMap;
 

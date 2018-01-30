@@ -137,7 +137,6 @@ public class GenerateGatePassActivity extends AppCompatActivity {
             );
 
 
-
         }
     };
 

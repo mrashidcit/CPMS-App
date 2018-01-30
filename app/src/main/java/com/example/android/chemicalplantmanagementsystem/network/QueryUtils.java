@@ -4,6 +4,8 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.example.android.chemicalplantmanagementsystem.data.tables.providers.GatePassContract;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,10 +13,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 
 /**
  * Created by Rashid Saleem on 24-Jan-18.
@@ -74,6 +79,139 @@ public final class QueryUtils {
         return url;
     }
 
+    // Send Get Request to fetch data
+    public static String sendGetRequest(String requestUrl, String token){
+
+        // Create URL object
+        URL url = createUrl(requestUrl);
+
+        // Perform HTTP request to the URL and receive a JSON response back
+        String jsonString = "";
+
+        // If the URL is null, then return early.
+        if (url == null) {
+            return jsonString;
+        }
+        HttpURLConnection conn = null;
+        InputStream inputStream = null;
+
+        try {
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000 /* milliseconds */);
+            conn.setConnectTimeout(15000 /* milliseconds */);
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Authorization", token);
+            conn.connect();
+
+            // If the request was successful (response code 200),
+            // then read the input stream and parse the response.
+            if (conn.getResponseCode() == 200) {
+                inputStream = conn.getInputStream();
+                jsonString = readFromStream(inputStream);
+            } else {
+                Log.e(LOG_TAG, "Error response code: " + conn.getResponseCode());
+            }
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Problem retrieving the User Result", e);
+        } finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
+            if (inputStream != null) {
+                // Closing the input stream could throw and IOException which is why
+                // the makeHttpRequest(URL url) method signature specifies than an IOException could be thrown.
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return jsonString;
+
+    }
+
+    // Send Put Request to update data
+    public static String sendPutRequest(String requestUrl, JSONObject gatePassJson, String token) {
+
+        // Create URL object
+        URL url = null;
+        try {
+            url = createUrl(requestUrl + "/" + gatePassJson.getInt(GatePassContract.GatePassEntry._ID));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        // Perform HTTP request to the URL and receive a JSON response back
+        String jsonString = "";
+
+        // If the URL is null, then return early.
+        if (url == null) {
+            return null;
+        }
+        HttpURLConnection conn = null;
+        InputStream inputStream = null;
+
+        try {
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000 /* milliseconds */);
+            conn.setConnectTimeout(15000 /* milliseconds */);
+            conn.setRequestMethod("PUT");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Authorization", token);
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+
+            OutputStream os = conn.getOutputStream();
+            OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+
+            osw.write(gatePassJson.toString());
+            osw.flush();
+
+            // If the request was successful (response code 200),
+            // then read the input stream and parse the response.
+            if (conn.getResponseCode() == 200) {
+                inputStream = conn.getInputStream();
+                jsonString = readFromStream(inputStream);
+
+            } else {
+
+                Log.e(LOG_TAG, "url: " + url.toString());
+                Log.e(LOG_TAG, "Error response code: " + conn.getResponseCode());
+                Log.e(LOG_TAG, "Response Message: " + conn.getResponseMessage());
+            }
+
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Problem retrieving the User Result", e);
+        } finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
+            if (inputStream != null) {
+                // Closing the input stream could throw and IOException which is why
+                // the makeHttpRequest(URL url) method signature specifies than an IOException could be thrown.
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return jsonString;
+
+    }
+
+    // Send Post Request
+//    private static String sendPostRequest(URL url, HashMap postParams, String token ) {
+//
+//    }
+
+
+
+
+
 
     /**
      * Make an HTTP request to the given URL and return a String as the response.
@@ -102,8 +240,6 @@ public final class QueryUtils {
 
             conn.connect();
 
-
-
             // If the request was successful (response code 200),
             // then read the input stream and parse the response.
             if (conn.getResponseCode() == 200) {
@@ -126,6 +262,9 @@ public final class QueryUtils {
         }
         return jsonString;
     }
+
+
+
 
     /**
      * Convert the {@link InputStream} into a String which contains the
