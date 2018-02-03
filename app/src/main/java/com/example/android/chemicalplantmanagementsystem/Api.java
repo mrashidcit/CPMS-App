@@ -6,6 +6,9 @@ package com.example.android.chemicalplantmanagementsystem;
 
 public class Api {
 
+
+    public static final String REQUEST_CODE = "request_code";
+
     public static final int CODE_GET_REQUEST = 1024;
     public static final int CODE_POST_REQUEST = 1025;
     public static final int CODE_PUT_REQUEST = 1026;

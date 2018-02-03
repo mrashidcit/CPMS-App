@@ -201,7 +201,6 @@ public class GenerateGatePassActivity extends AppCompatActivity {
         mMaterialList.add(new Material(13, "ed32", "sand", 0, "for water purfication"));
         mMaterialList.add(new Material(14, "ed39", "Oxegyn", 0, "for water purfication"));
 
-
         for (int i = 0; i <  mMaterialList.size(); i++) {
             mMaterialAdapter.add(mMaterialList.get(i).getName().toString());
         }
@@ -209,7 +208,6 @@ public class GenerateGatePassActivity extends AppCompatActivity {
         for (int i = 0; i < mProductList.size(); i++) {
             mProductAdapter.add(mProductList.get(i).getName().toString());
         }
-
 
     }
 

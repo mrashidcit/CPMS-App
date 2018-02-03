@@ -138,6 +138,14 @@ public class User {
         return  "Bearer " + access_token;
     }
 
+    public static final String getToken(Context context) {
+        SharedPreferences sharedPref = context.getSharedPreferences(UserEntry.TABLE_NAME, 0);
+
+        String access_token = sharedPref.getString(context.getString(R.string.pref_access_token_key), "");
+
+        return  "Bearer " + access_token;
+    }
+
     public static JSONObject readUserFromJson(String userInfoJSONString, Context context) throws JSONException {
         JSONObject parent = new JSONObject(userInfoJSONString.toString());
 //        JSONObject userInfoJSON = parent;

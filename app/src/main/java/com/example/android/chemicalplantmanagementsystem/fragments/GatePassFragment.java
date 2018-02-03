@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.android.chemicalplantmanagementsystem.Api;
@@ -43,6 +44,8 @@ public class GatePassFragment extends Fragment
     private static final int GATEPASS_LOADER_ID = 1001;
 
     private ListView mGatePassListView;
+    private ProgressBar mLoadingIndicator;
+
     private HashMap<Integer, GatePass> mGatePassHashMap;
     private ArrayList<GatePass> mGatePassArrayList;
 
@@ -70,7 +73,7 @@ public class GatePassFragment extends Fragment
 
         // Find a reference to the {@link Listview} in the layout
         mGatePassListView = (ListView) gatePassView.findViewById(R.id.list_gate_pass);
-
+        mLoadingIndicator = (ProgressBar) gatePassView.findViewById(R.id.pb_loading_indicator);
 
         // Initialize Data Members
         mGatePassAdapter = new GatePassAdapter(getContext(), new ArrayList<GatePass>());
@@ -86,36 +89,48 @@ public class GatePassFragment extends Fragment
 
         // Generate and show Fake Data
         generateFakeGatePasses();
+        mLoadingIndicator.setVisibility(View.GONE);
         mGatePassAdapter.addAll(mGatePassArrayList);
-        mGatePassListView.performItemClick(mGatePassListView.getChildAt(0), 0, 0);
         mGatePassAdapter.notifyDataSetChanged();
+        mGatePassListView.performItemClick(mGatePassListView.getChildAt(0), 0, 0);
 
-        ConnectivityManager connMgr = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+//        ConnectivityManager connMgr = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+//
+//        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+//
+//        if (networkInfo != null && networkInfo.isConnected()) {
+//            android.support.v4.app.LoaderManager loaderManager = getLoaderManager();
+//            loaderManager.initLoader(GATEPASS_LOADER_ID, null, this);
+//
+//        } else {
+//
+//            Toast.makeText(mContext, "Unable to Connect!" , Toast.LENGTH_LONG).show();
+//
+//        }
 
-        if (networkInfo != null && networkInfo.isConnected()) {
-            android.support.v4.app.LoaderManager loaderManager = getLoaderManager();
-            loaderManager.initLoader(GATEPASS_LOADER_ID, null, this);
-
-        } else {
-
-            Toast.makeText(mContext, "Unable to Connect!" , Toast.LENGTH_LONG).show();
-
-        }
         return gatePassView;
     }
 
 
     @Override
     public android.support.v4.content.Loader onCreateLoader(int id, Bundle args) {
-        // Create a new loader for the give URL
 
+        mLoadingIndicator.setVisibility(View.VISIBLE); // Show ProgressBar
+
+        // Create a new loader for the give URL
         return new GatePassLoader(mContext, Api.GATE_PASS_URL, Api.CODE_GET_REQUEST);
     }
 
     @Override
     public void onLoadFinished(android.support.v4.content.Loader loader, Object data) {
+
+        if ( data == null) {
+            return;
+        }
+
+        // otherwise hide Loading Indciator
+        mLoadingIndicator.setVisibility(View.GONE);
 
         HashMap<Integer, GatePass> gatePassHashMap = (HashMap<Integer, GatePass>) data;
 
@@ -129,9 +144,7 @@ public class GatePassFragment extends Fragment
         mGatePassAdapter.addAll(mGatePassArrayList);
         mGatePassAdapter.notifyDataSetChanged();
 
-
 //        mGatePassListView.performItemClick(mGatePassListView.getChildAt(0), 0, 0);
-
 
     }
 

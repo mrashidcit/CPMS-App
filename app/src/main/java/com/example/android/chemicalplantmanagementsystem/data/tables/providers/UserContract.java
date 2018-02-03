@@ -86,7 +86,11 @@ public class UserContract {
          */
         public final static String COLUMN_USER_UPDATED_AT = "updated_at";
 
+
     }
+
+    // Other Variables
+    public final static String COLUMN_TOKEN = "token";
 
 
 

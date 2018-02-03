@@ -22,6 +22,59 @@ public class ProductContract {
          */
         public final static String _ID  = "id";
 
+        /**
+         * Type: TEXT UNIQUE
+         */
+        public final static String COLUMN_PRODUCT_CODE  = "product_code";
+
+        /**
+         * Type: TEXT
+         */
+        public final static String COLUMN_NAME  = "name";
+
+        /**
+         * Type: INTEGER
+         */
+        public final static String COLUMN_DELETE_STATUS  = "delete_status";
+
+        /**
+         * Type: TEXT
+         */
+        public final static String COLUMN_DESCRIPTION  = "description";
+
+        /**
+         * Type: INTEGER
+         */
+        public final static String COLUMN_USER_ID  = "user_id";
+
+
+
+
+
+        // Pivot Table Columns
+
+        /**
+         * Type: INTEGER
+         */
+        public final static String COLUMN_PIVOT_GATE_PASS_ID  = "gate_id";
+
+        /**
+         * Type: INTEGER
+         */
+        public final static String COLUMN_PIVOT_PRODUCT_ID  = "product_id";
+
+        /**
+         * Type: INTEGER
+         */
+        public final static String COLUMN_PIVOT_QTY  = "quantity";
+
+
+
+
+
+
+
+
 
 
 

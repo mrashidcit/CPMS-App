@@ -19,11 +19,43 @@ public class Material {
     private int departmentId;
     private int companyId;
 
-
+    // Pivot Table Columns
+    private int pivotGatePassId;
+    private int pivotMaterialId;
+    private int pivotQuantity;
 
     // Contructor
 
     public Material() {
+    }
+
+    public Material(int pivotMaterialId, int pivotQuantity) {
+        this.pivotMaterialId = pivotMaterialId;
+        this.pivotQuantity = pivotQuantity;
+    }
+
+    /**
+     *
+     * @param id
+     * @param materialCode
+     * @param name
+     * @param deleteStatus
+     * @param description
+     * @param userId
+     * @param pivotGatePassId
+     * @param pivotMaterialId
+     * @param pivotQuantity
+     */
+    public Material(int id, String materialCode, String name, int deleteStatus, String description, int userId, int pivotGatePassId, int pivotMaterialId, int pivotQuantity) {
+        this.id = id;
+        this.materialCode = materialCode;
+        this.name = name;
+        this.deleteStatus = deleteStatus;
+        this.description = description;
+        this.userId = userId;
+        this.pivotGatePassId = pivotGatePassId;
+        this.pivotMaterialId = pivotMaterialId;
+        this.pivotQuantity = pivotQuantity;
     }
 
     public Material(int id, String materialCode, String name, int deleteStatus, String description) {
@@ -77,6 +109,20 @@ public class Material {
         this.companyId = companyId;
     }
 
+    // Pivot Table Setter Methods
+
+    public void setPivotGatePassId(int pivotGatePassId) {
+        this.pivotGatePassId = pivotGatePassId;
+    }
+
+    public void setPivotMaterialId(int pivotMaterialId) {
+        this.pivotMaterialId = pivotMaterialId;
+    }
+
+    public void setPivotQuantity(int pivotQuantity) {
+        this.pivotQuantity = pivotQuantity;
+    }
+
 
     // Getter Methods
 
@@ -119,5 +165,18 @@ public class Material {
 
     public int getCompanyId() {
         return companyId;
+    }
+
+    // Pivot Column Getter Methods
+
+    public int getPivotGatePassId() {
+        return pivotGatePassId;
+    }
+    public int getPivotMaterialId() {
+        return pivotMaterialId;
+    }
+
+    public int getPivotQuantity() {
+        return pivotQuantity;
     }
 }

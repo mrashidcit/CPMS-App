@@ -14,15 +14,37 @@ public class Product {
     private String name;
     private int deleteStatus;
     private String description;
-    private long branchId;
-    private long departmentId;
-    private long companyId;
-    private long userId;
-    private long unitId;
+    private int branchId;
+    private int departmentId;
+    private int companyId;
+    private int userId;
+    private int unitId;
     private Timestamp createdAt;
 
+    // Pivot Table Columns
+    private int pivotGatePassId;
+    private int pivotProductId;
+    private int pivotQuantity;
 
 
+    // Default Constructor
+    public Product() {
+    }
+
+    public Product(int pivotProductId, int pivotQuantity) {
+        this.pivotProductId = pivotProductId;
+        this.pivotQuantity = pivotQuantity;
+    }
+
+    /**
+     * Constructor
+     *
+     * @param id
+     * @param productCode
+     * @param name
+     * @param deleteStatus
+     * @param description
+     */
     public Product(int id, String productCode, String name, int deleteStatus, String description) {
         this.id = id;
         this.productCode = productCode;
@@ -31,6 +53,44 @@ public class Product {
         this.description = description;
     }
 
+    public Product(int id, String productCode, String name, int deleteStatus, String description, int userId, int pivotGatePassId, int pivotProductId, int pivotQuantity) {
+        this.id = id;
+        this.productCode = productCode;
+        this.name = name;
+        this.deleteStatus = deleteStatus;
+        this.description = description;
+        this.userId = userId;
+        this.pivotGatePassId = pivotGatePassId;
+        this.pivotProductId = pivotProductId;
+        this.pivotQuantity = pivotQuantity;
+    }
+
+    /**
+     * Constructor
+     * @param id
+     * @param productCode
+     * @param name
+     * @param deleteStatus
+     * @param description
+     * @param userId
+     */
+    public Product(int id, String productCode, String name, int deleteStatus, String description, int userId) {
+        this.id = id;
+        this.productCode = productCode;
+        this.name = name;
+        this.deleteStatus = deleteStatus;
+        this.description = description;
+        this.userId = userId;
+    }
+
+
+    /**
+     * Constructor
+     * @param productCode
+     * @param name
+     * @param deleteStatus
+     * @param description
+     */
     public Product(String productCode, String name, int deleteStatus, String description) {
         this.productCode = productCode;
         this.name = name;
@@ -61,29 +121,44 @@ public class Product {
         this.description = description;
     }
 
-    public void setBranchId(long branchId) {
+    public void setBranchId(int branchId) {
         this.branchId = branchId;
     }
 
-    public void setDepartmentId(long departmentId) {
+    public void setDepartmentId(int departmentId) {
         this.departmentId = departmentId;
     }
 
-    public void setCompanyId(long companyId) {
+    public void setCompanyId(int companyId) {
         this.companyId = companyId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
-    public void setUnitId(long unitId) {
+    public void setUnitId(int unitId) {
         this.unitId = unitId;
     }
 
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
+
+    // Pivot Columns methods
+
+    public void setPivotGatePassId(int pivotGatePassId) {
+        this.pivotGatePassId = pivotGatePassId;
+    }
+
+    public void setPivotProductId(int pivotProductId) {
+        this.pivotProductId = pivotProductId;
+    }
+
+    public void setPivotQuantity(int pivotQuantity) {
+        this.pivotQuantity = pivotQuantity;
+    }
+
 
     // Getter Methods
 
@@ -108,27 +183,41 @@ public class Product {
         return description;
     }
 
-    public long getBranchId() {
+    public int getBranchId() {
         return branchId;
     }
 
-    public long getDepartmentId() {
+    public int getDepartmentId() {
         return departmentId;
     }
 
-    public long getCompanyId() {
+    public int getCompanyId() {
         return companyId;
     }
 
-    public long getUserId() {
+    public int getUserId() {
         return userId;
     }
 
-    public long getUnitId() {
+    public int getUnitId() {
         return unitId;
     }
 
     public Timestamp getCreatedAt() {
         return createdAt;
+    }
+
+    // Pivot Column Getter Methods
+
+    public int getPivotGatePassId() {
+        return pivotGatePassId;
+    }
+
+    public int getPivotProductId() {
+        return pivotProductId;
+    }
+
+    public int getPivotQuantity() {
+        return pivotQuantity;
     }
 }

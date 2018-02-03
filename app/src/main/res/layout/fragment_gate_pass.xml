@@ -1,40 +1,56 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="@dimen/gate_pass_person_name_width"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="Name"
-            android:textSize="@dimen/gate_pass_list_item_heading_text_size" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="@dimen/gate_pass_item_name_width"
-            android:layout_height="wrap_content"
-            android:text="Phone No."
-            android:textSize="@dimen/gate_pass_list_item_heading_text_size" />
+            <TextView
+                android:layout_width="@dimen/gate_pass_person_name_width"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="Name"
+                android:textSize="@dimen/gate_pass_list_item_heading_text_size" />
 
-        <TextView
-            android:layout_width="@dimen/gate_pass_destination_width"
-            android:layout_height="wrap_content"
-            android:text="Destination"
-            android:textSize="@dimen/gate_pass_list_item_heading_text_size" />
+            <TextView
+                android:layout_width="@dimen/gate_pass_item_name_width"
+                android:layout_height="wrap_content"
+                android:text="Phone No."
+                android:textSize="@dimen/gate_pass_list_item_heading_text_size" />
+
+            <TextView
+                android:layout_width="@dimen/gate_pass_destination_width"
+                android:layout_height="wrap_content"
+                android:text="Destination"
+                android:textSize="@dimen/gate_pass_list_item_heading_text_size" />
+
+        </LinearLayout>
+
+        <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/list_gate_pass"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 
-    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/list_gate_pass"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <ProgressBar
+        android:id="@+id/pb_loading_indicator"
+        style="@style/Base.Widget.AppCompat.ProgressBar"
+        android:layout_centerInParent="true"
+        android:layout_width="100dp"
+        android:layout_height="100dp" />
 
 
-</LinearLayout>
-
-
+</RelativeLayout>

@@ -2,6 +2,7 @@ package com.example.android.chemicalplantmanagementsystem.loaders;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
+import android.os.Bundle;
 import android.sax.RootElement;
 import android.text.TextUtils;
 import android.util.Log;
@@ -10,6 +11,7 @@ import com.example.android.chemicalplantmanagementsystem.Api;
 import com.example.android.chemicalplantmanagementsystem.data.tables.GatePass;
 import com.example.android.chemicalplantmanagementsystem.data.tables.User;
 import com.example.android.chemicalplantmanagementsystem.data.tables.providers.GatePassContract.GatePassEntry;
+import com.example.android.chemicalplantmanagementsystem.data.tables.providers.UserContract;
 import com.example.android.chemicalplantmanagementsystem.network.QueryUtils;
 
 import org.json.JSONArray;
@@ -32,6 +34,8 @@ public class GatePassLoader extends android.support.v4.content.AsyncTaskLoader<H
     private User mUser;
     private String mToken;
 
+    private Bundle mArgs;
+
     // the parameters
     HashMap<Integer, GatePass> params;
 
@@ -40,12 +44,12 @@ public class GatePassLoader extends android.support.v4.content.AsyncTaskLoader<H
 
     public GatePassLoader(Context context, String mUrl, int requestCode) {
         super(context);
-        mUser = new User(context);
+
+
         this.mUrl = mUrl;
         this.params = null;
         this.requestCode = requestCode;
-
-        mToken = mUser.getToken();
+        this.mToken = User.getToken(context);
 
     }
 

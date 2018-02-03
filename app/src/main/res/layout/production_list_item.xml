@@ -28,7 +28,7 @@
 
     <!--<TextView-->
     <!--android:id="@+id/tv_quantity"-->
-    <!--tools:text="quantity"-->
+    <!--tools:tepivotQuantitytity"-->
 
     <!--android:textSize="22sp"-->
     <!--android:layout_width="wrap_content"-->
