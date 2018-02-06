@@ -29,7 +29,14 @@ public class Material {
     public Material() {
     }
 
-    public Material(int pivotMaterialId, int pivotQuantity) {
+    /**
+     *
+     * @param pivotGatePassId
+     * @param pivotMaterialId
+     * @param pivotQuantity
+     */
+    public Material(int pivotGatePassId, int pivotMaterialId, int pivotQuantity) {
+        this.pivotGatePassId = pivotGatePassId;
         this.pivotMaterialId = pivotMaterialId;
         this.pivotQuantity = pivotQuantity;
     }

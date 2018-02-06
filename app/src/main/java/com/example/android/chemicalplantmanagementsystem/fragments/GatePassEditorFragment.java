@@ -24,7 +24,7 @@ import com.example.android.chemicalplantmanagementsystem.data.tables.GenerateDat
 import com.example.android.chemicalplantmanagementsystem.data.tables.Material;
 import com.example.android.chemicalplantmanagementsystem.data.tables.Product;
 import com.example.android.chemicalplantmanagementsystem.data.tables.User;
-import com.example.android.chemicalplantmanagementsystem.data.tables.providers.GatePassContract;
+import com.example.android.chemicalplantmanagementsystem.data.tables.providers.GatePassContract.GatePassEntry;
 import com.example.android.chemicalplantmanagementsystem.data.tables.providers.MaterialContract.MaterialEntry;
 import com.example.android.chemicalplantmanagementsystem.data.tables.providers.ProductContract.ProductEntry;
 import com.example.android.chemicalplantmanagementsystem.data.tables.providers.UserContract;
@@ -48,7 +48,7 @@ import java.util.HashMap;
 public class GatePassEditorFragment extends Fragment
                     implements android.support.v4.app.LoaderManager.LoaderCallbacks{
 
-    private static final String LOG_TAG = GatePassEditorFragment.class.getSimpleName();
+    public static final String LOG_TAG = GatePassEditorFragment.class.getSimpleName();
     private static final int GATEPASS_EDITOR_LOADER_ID = 1002;
     private static final java.lang.String REQUEST_CODE = "request_code";
 
@@ -88,6 +88,7 @@ public class GatePassEditorFragment extends Fragment
     private android.support.v4.app.LoaderManager mLoaderManager;
     private int mRequestCode;
 
+    // Products and Materials in the List of this GatePass
     private HashMap<Integer, Product> mProductHashMap;
     private HashMap<Integer, Material> mMaterialHashMap;
 
@@ -175,6 +176,10 @@ public class GatePassEditorFragment extends Fragment
         addMaterial();
         mMaterialSpinner.setSelection(2);
         addMaterial();
+
+
+        // Called on Save Button Clicked
+        saveGatePass();
 
 
 //        updateGatePass();
@@ -405,7 +410,7 @@ public class GatePassEditorFragment extends Fragment
             productId = Integer.parseInt(productItemView.getTag().toString());
             qty = Integer.parseInt(productQtyView.getText().toString());
 
-            productArrayList.add(new Product(productId, qty));
+            productArrayList.add(new Product(mGatePass.getId(), productId, qty));
 
             Log.v(LOG_TAG, "product: ( " + productId + " , " + qty + " )");
 
@@ -420,7 +425,7 @@ public class GatePassEditorFragment extends Fragment
             materialId = Integer.parseInt(materialItemView.getTag().toString());
             qty = Integer.parseInt(materialQtyView.getText().toString());
 
-            materialArrayList.add(new Material(materialId, qty));
+            materialArrayList.add(new Material(mGatePass.getId(), materialId, qty));
 
             Log.v(LOG_TAG, "material: ( " + materialId + " , " + qty + " )");
         }
@@ -459,18 +464,48 @@ public class GatePassEditorFragment extends Fragment
         mGatePass.setDestination(mDestinationTextView.getText().toString());
         mGatePass.setRemarks(mRemarksTextView.getText().toString());
 
+        // Extracting Products Info.
+        for (int i =2; i < mProductContainerView.getChildCount(); i++) {
+
+            LinearLayout productItemView = (LinearLayout) mProductContainerView.getChildAt(i);
+
+            EditText qtyView = (EditText) productItemView.getChildAt(1);
+
+            int gatePassId = mGatePass.getId();
+            int productId = Integer.parseInt(productItemView.getTag().toString());
+            int qty = Integer.parseInt(qtyView.getText().toString());
+            mProductHashMap.put(productId, new Product(gatePassId, productId, qty));
+
+        }
+
+        // Extracting Material Info.
+        for (int i = 2; i < mMaterialContainerView.getChildCount(); i++) {
+
+            LinearLayout materialItemView = (LinearLayout) mMaterialContainerView.getChildAt(i);
+
+            EditText qtyView = (EditText) materialItemView.getChildAt(1);
+
+            int gatePassId = mGatePass.getId();
+            int materialId = Integer.parseInt(materialItemView.getTag().toString());
+            int qty = Integer.parseInt(qtyView.getText().toString());
+
+            mMaterialHashMap.put(materialId, new Material(gatePassId, materialId, qty));
+
+        }
+
+        mRequestCode = Api.CODE_POST_REQUEST;
+
         ConnectivityManager connMgr = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
         if (networkInfo != null && networkInfo.isConnected()) {
-
 
             if (mLoaderManager.getLoader(GATEPASS_EDITOR_LOADER_ID) != null) {
                 mLoaderManager.destroyLoader(GATEPASS_EDITOR_LOADER_ID);
 
             }
 
-            mLoaderManager.initLoader(GATEPASS_EDITOR_LOADER_ID, null, this);
+            mLoaderManager.initLoader(GATEPASS_EDITOR_LOADER_ID, new Bundle(), this);
 
 
         } else {
@@ -521,10 +556,18 @@ public class GatePassEditorFragment extends Fragment
 
         if (Api.CODE_GET_REQUEST == mRequestCode) {
 
-            args.putInt(GatePassContract.GatePassEntry._ID, mGatePass.getId());
+            args.putInt(GatePassEntry._ID, mGatePass.getId());
             args.putString(UserContract.COLUMN_TOKEN, User.getToken(mContext));
 
             return new GatePassEditorLoader(mContext, Api.GATE_PASS_URL, args);
+
+        } else if (Api.CODE_POST_REQUEST == mRequestCode) {
+
+            args.putInt(GatePassEntry._ID, mGatePass.getId());
+            args.putString(UserContract.COLUMN_TOKEN, User.getToken(mContext));
+
+            Log.v(LOG_TAG, "onCreateLoader()");
+            return new GatePassEditorLoader(mContext, mGatePass, mProductHashMap, mMaterialHashMap, Api.GATE_PASS_URL, args);
 
         }
 
@@ -540,82 +583,86 @@ public class GatePassEditorFragment extends Fragment
     @Override
     public void onLoadFinished(android.support.v4.content.Loader loader, Object data) {
 
-        if (data == null) {
-            Toast.makeText(mContext, "Error in connectivity!", Toast.LENGTH_SHORT).show();
-
-            return;
-        }
-
-        JSONObject root;
-        JSONObject gatePassJson;
-        JSONObject productJson;
-        JSONObject materialJson;
-        JSONObject pivotJson;
-        try {
-            root = new JSONObject(data.toString());
-
-            // currently not using this becuase gatepass data already exists
-            gatePassJson = root.getJSONObject("gatepass");
-
-            JSONArray productsArray = root.getJSONArray("products");
+        Log.v(LOG_TAG, "onLoadFinished() called");
 
 
-            for (int i = 0; i < productsArray.length(); i++) {
-                productJson = productsArray.getJSONObject(i);
-
-                int id = productJson.getInt(ProductEntry._ID);
-                String productCode = productJson.getString(ProductEntry.COLUMN_PRODUCT_CODE);
-                String name = productJson.getString(ProductEntry.COLUMN_NAME);
-                int deleteStatus = productJson.getInt(ProductEntry.COLUMN_DELETE_STATUS);
-                String description = productJson.getString(ProductEntry.COLUMN_DESCRIPTION);
-                int userId = productJson.getInt(ProductEntry.COLUMN_USER_ID);
-
-                pivotJson = productJson.getJSONObject("pivot");
-
-                // Pivot Table Columns
-                int pivotGatePassId = pivotJson.getInt(ProductEntry.COLUMN_PIVOT_GATE_PASS_ID);
-                int pivotProductId = pivotJson.getInt(ProductEntry.COLUMN_PIVOT_PRODUCT_ID);
-                int pivotQuantity = pivotJson.getInt(ProductEntry.COLUMN_PIVOT_QTY);
-
-                Product product = new Product(id, productCode, name, deleteStatus, description, userId, pivotGatePassId, pivotGatePassId, pivotQuantity);
-
-                mProductHashMap.put(id, product);
-
-            }
-
-            JSONArray materialsArray = root.getJSONArray("materials");
-
-            for (int i = 0; i < materialsArray.length(); i++) {
-                materialJson = materialsArray.getJSONObject(i);
-
-                int id = materialJson.getInt(MaterialEntry._ID);
-                String materialCode = materialJson.getString(MaterialEntry.COLUMN_MATERIAL_CODE);
-                String name = materialJson.getString(MaterialEntry.COLUMN_NAME);
-                int deleteStatus = materialJson.getInt(MaterialEntry.COLUMN_DELETE_STATUS);
-                String description = materialJson.getString(MaterialEntry.COLUMN_DESCRIPTION);
-                int userId = materialJson.getInt(MaterialEntry.COLUMN_USER_ID);
-
-                pivotJson = materialJson.getJSONObject("pivot");
-                int pivotGatePassId = pivotJson.getInt(MaterialEntry.COLUMN_PIVOT_GATE_PASS_ID);
-                int pivotMaterialId = pivotJson.getInt(MaterialEntry.COLUMN_PIVOT_MATERIAL_ID);
-                int pivotQuantity = pivotJson.getInt(MaterialEntry.COLUMN_PIVOT_QUANTITY);
-
-                Material material = new Material(id, materialCode, name, deleteStatus, description, userId, pivotGatePassId, pivotMaterialId, pivotQuantity);
-
-                mMaterialHashMap.put(id, material);
-
-            }
+//        if (data == null) {
+//            Toast.makeText(mContext, "Error in connectivity!", Toast.LENGTH_SHORT).show();
+//
+//            return;
+//        }
 
 
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-        displayProducts();
-        displayMaterials();
+//        JSONObject root;
+//        JSONObject gatePassJson;
+//        JSONObject productJson;
+//        JSONObject materialJson;
+//        JSONObject pivotJson;
+//        try {
+//            root = new JSONObject(data.toString());
+//
+//            // currently not using this becuase gatepass data already exists
+//            gatePassJson = root.getJSONObject("gatepass");
+//
+//            JSONArray productsArray = root.getJSONArray("products");
+//
+//
+//            for (int i = 0; i < productsArray.length(); i++) {
+//                productJson = productsArray.getJSONObject(i);
+//
+//                int id = productJson.getInt(ProductEntry._ID);
+//                String productCode = productJson.getString(ProductEntry.COLUMN_PRODUCT_CODE);
+//                String name = productJson.getString(ProductEntry.COLUMN_NAME);
+//                int deleteStatus = productJson.getInt(ProductEntry.COLUMN_DELETE_STATUS);
+//                String description = productJson.getString(ProductEntry.COLUMN_DESCRIPTION);
+//                int userId = productJson.getInt(ProductEntry.COLUMN_USER_ID);
+//
+//                pivotJson = productJson.getJSONObject("pivot");
+//
+//                // Pivot Table Columns
+//                int pivotGatePassId = pivotJson.getInt(ProductEntry.COLUMN_PIVOT_GATE_PASS_ID);
+//                int pivotProductId = pivotJson.getInt(ProductEntry.COLUMN_PIVOT_PRODUCT_ID);
+//                int pivotQuantity = pivotJson.getInt(ProductEntry.COLUMN_PIVOT_QTY);
+//
+//                Product product = new Product(id, productCode, name, deleteStatus, description, userId, pivotGatePassId, pivotGatePassId, pivotQuantity);
+//
+//                mProductHashMap.put(id, product);
+//
+//            }
+//
+//            JSONArray materialsArray = root.getJSONArray("materials");
+//
+//            for (int i = 0; i < materialsArray.length(); i++) {
+//                materialJson = materialsArray.getJSONObject(i);
+//
+//                int id = materialJson.getInt(MaterialEntry._ID);
+//                String materialCode = materialJson.getString(MaterialEntry.COLUMN_MATERIAL_CODE);
+//                String name = materialJson.getString(MaterialEntry.COLUMN_NAME);
+//                int deleteStatus = materialJson.getInt(MaterialEntry.COLUMN_DELETE_STATUS);
+//                String description = materialJson.getString(MaterialEntry.COLUMN_DESCRIPTION);
+//                int userId = materialJson.getInt(MaterialEntry.COLUMN_USER_ID);
+//
+//                pivotJson = materialJson.getJSONObject("pivot");
+//                int pivotGatePassId = pivotJson.getInt(MaterialEntry.COLUMN_PIVOT_GATE_PASS_ID);
+//                int pivotMaterialId = pivotJson.getInt(MaterialEntry.COLUMN_PIVOT_MATERIAL_ID);
+//                int pivotQuantity = pivotJson.getInt(MaterialEntry.COLUMN_PIVOT_QUANTITY);
+//
+//                Material material = new Material(id, materialCode, name, deleteStatus, description, userId, pivotGatePassId, pivotMaterialId, pivotQuantity);
+//
+//                mMaterialHashMap.put(id, material);
+//
+//            }
+//
+//
+//
+//
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//        displayProducts();
+//        displayMaterials();
 
 //        Log.v(LOG_TAG, "response: " + data.toString());
 

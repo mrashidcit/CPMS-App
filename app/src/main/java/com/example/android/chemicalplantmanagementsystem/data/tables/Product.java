@@ -31,7 +31,15 @@ public class Product {
     public Product() {
     }
 
-    public Product(int pivotProductId, int pivotQuantity) {
+    /**
+     *
+     * @param pivotGatePassId
+     * @param pivotProductId
+     * @param pivotQuantity
+     */
+    public Product(int pivotGatePassId, int pivotProductId, int pivotQuantity) {
+        this.id = pivotProductId;
+        this.pivotGatePassId = pivotGatePassId;
         this.pivotProductId = pivotProductId;
         this.pivotQuantity = pivotQuantity;
     }
