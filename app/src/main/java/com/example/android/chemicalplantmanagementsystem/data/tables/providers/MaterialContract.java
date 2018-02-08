@@ -14,7 +14,7 @@ public class MaterialContract {
     public static final class MaterialEntry implements BaseColumns {
 
 
-        private static final String TABLE_NAME = "materials";
+        public static final String TABLE_NAME = "materials";
 
         /**
          * Type: INTEGER

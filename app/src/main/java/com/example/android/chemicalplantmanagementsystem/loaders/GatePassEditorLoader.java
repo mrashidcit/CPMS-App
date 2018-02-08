@@ -107,6 +107,7 @@ public class GatePassEditorLoader extends AsyncTaskLoader<String> {
             gatePassJson.put(GatePassEntry.COLUMN_DESTINATION, mGatePass.getDestination());
             gatePassJson.put(GatePassEntry.COLUMN_REMARKS, mGatePass.getRemarks());
 
+            // For Product JSONArray
             Integer[] productKeys = mProductHashMap.keySet().toArray(new Integer[mProductHashMap.size()]);
             Product product;
             JSONObject productJson;
@@ -124,8 +125,7 @@ public class GatePassEditorLoader extends AsyncTaskLoader<String> {
 
             }
 
-
-            // For Material Array
+            // For Material JSONArray
             Integer [] materialKeys = mMaterialHashMap.keySet().toArray(new Integer[mMaterialHashMap.size()]);
             Material material = null;
             JSONObject materialJson = null;
@@ -142,12 +142,11 @@ public class GatePassEditorLoader extends AsyncTaskLoader<String> {
 
             }
 
-            for (int i=0; i < materialJsonArray.length(); i++) {
+            root.put(GatePassEntry.TABLE_NAME, gatePassJson); // Add GatePass Json
+            root.put(ProductEntry.TABLE_NAME, productJsonArray); // Add Product JSONArray
+            root.put(MaterialEntry.TABLE_NAME, materialJsonArray); // Add Material JSONArray
 
-                Log.v(LOG_TAG, "array materialId: " + materialJsonArray.getJSONObject(i).getInt(MaterialEntry.COLUMN_PIVOT_MATERIAL_ID));
-            }
-
-
+            Log.v(LOG_TAG, root.toString());
 
         } catch (JSONException e) {
             e.printStackTrace();

@@ -98,7 +98,8 @@ public class GatePassEditorFragment extends Fragment
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_gate_pass_editor, container, false);
 
-        mGatePass = (GatePass) getArguments().getSerializable("gate_pass");
+//        mGatePass = (GatePass) getArguments().getSerializable("gate_pass");
+        mGatePass = new GatePass(3, "Ali Usman", "03033329738", "Lahore", "Sincere");
         mContext = getContext();
 
         // Setting Controls
