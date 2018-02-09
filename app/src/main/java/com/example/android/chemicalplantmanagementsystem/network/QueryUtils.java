@@ -204,9 +204,72 @@ public final class QueryUtils {
     }
 
     // Send Post Request
-//    private static String sendPostRequest(URL url, HashMap postParams, String token ) {
-//
-//    }
+    public static String sendPostRequest(String requestUrl, JSONObject jsonObject, String token ) {
+
+        // Create URL object
+        URL url = null;
+        url = createUrl(requestUrl);
+
+        // Perform HTTP request to the URL and receive a JSON reponse back
+        String jsonResponseString = "";
+
+        // If the URL is null then return early.
+        if (url == null) {
+            return null;
+        }
+
+        HttpURLConnection conn = null;
+        InputStream inputStream = null;
+
+        try {
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000 /* milliseconds */);
+            conn.setConnectTimeout(15000 /* milliseconds */);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Authorization", token);
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+
+            OutputStream os = conn.getOutputStream();
+            OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+
+            osw.write(jsonObject.toString());
+            osw.flush();
+
+            // If the request was successful (response code 200),
+            // then read the input stream and parse the response.
+            if (conn.getResponseCode() == 200) {
+                inputStream = conn.getInputStream();
+                jsonResponseString = readFromStream(inputStream);
+                Log.v(LOG_TAG, "jsonResponseString: " + jsonResponseString);
+            } else {
+
+                Log.e(LOG_TAG, "url: " + url.toString());
+                Log.e(LOG_TAG, "Error response code: " + conn.getResponseCode());
+                Log.e(LOG_TAG, "Response Message: " + conn.getResponseMessage());
+
+            }
+
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Problem retrieving the User Result", e);
+            e.printStackTrace();
+        } finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
+            if (inputStream != null) {
+
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return jsonResponseString;
+    }
 
 
 
@@ -318,25 +381,3 @@ public final class QueryUtils {
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

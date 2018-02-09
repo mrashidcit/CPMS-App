@@ -178,12 +178,8 @@ public class GatePassEditorFragment extends Fragment
         mMaterialSpinner.setSelection(2);
         addMaterial();
 
-
         // Called on Save Button Clicked
-        saveGatePass();
-
-
-//        updateGatePass();
+//        saveGatePass();
 
         return v;
     }
@@ -584,7 +580,25 @@ public class GatePassEditorFragment extends Fragment
     @Override
     public void onLoadFinished(android.support.v4.content.Loader loader, Object data) {
 
-        Log.v(LOG_TAG, "onLoadFinished() called");
+//        String jsonString = "{\"status\":\"success\",\"msg\":\"Successfully Created!\"}";
+
+        String jsonString = data.toString();
+
+        Log.v(LOG_TAG, jsonString);
+
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(jsonString);
+
+            Log.v(LOG_TAG, "status: " + jsonObject.getString("status"));
+            Log.v(LOG_TAG, "msg: " + jsonObject.getString("msg"));
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
 
 
 //        if (data == null) {

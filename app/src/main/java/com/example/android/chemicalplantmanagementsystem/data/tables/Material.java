@@ -73,6 +73,14 @@ public class Material {
         this.description = description;
     }
 
+    public Material(int id, String materialCode, String name, String description, int pivotQuantity) {
+        this.id = id;
+        this.materialCode = materialCode;
+        this.name = name;
+        this.description = description;
+        this.pivotQuantity = pivotQuantity;
+    }
+
     // Setter Methods
 
 

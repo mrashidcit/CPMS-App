@@ -22,6 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.FormatFlagsConversionMismatchException;
 import java.util.HashMap;
@@ -44,12 +45,9 @@ public class GatePassEditorLoader extends AsyncTaskLoader<String> {
     // Response from the server
     private String mJsonResponseString;
 
-
     private GatePass mGatePass;
     private HashMap<Integer, Product> mProductHashMap;
     private HashMap<Integer, Material> mMaterialHashMap;
-
-
 
     // Constructor to get the GatePass Info. with particular id
     // This will used to get Data from the Server
@@ -88,69 +86,86 @@ public class GatePassEditorLoader extends AsyncTaskLoader<String> {
 
     @Override
     public String loadInBackground() {
+        Log.v(LOG_TAG, "loadInBackground()");
 
         if (mUrl == null) {
             return  null;
         }
 
-        // Getting data of a particular GatePass
-        JSONObject root = new JSONObject();
-        JSONObject gatePassJson = new JSONObject();
-        JSONArray productJsonArray = new JSONArray();
-        JSONArray materialJsonArray = new JSONArray();
+        // GET Request
+        if (Api.CODE_GET_REQUEST == mRequestCode) {
 
-        try {
-            // GatePass Object Info.
-            gatePassJson.put(GatePassEntry._ID, mGatePass.getId());
-            gatePassJson.put(GatePassEntry.COLUMN_PERSON_NAME, mGatePass.getPersonName());
-            gatePassJson.put(GatePassEntry.COLUMN_CONTACT_PHONE, mGatePass.getContactPhone());
-            gatePassJson.put(GatePassEntry.COLUMN_DESTINATION, mGatePass.getDestination());
-            gatePassJson.put(GatePassEntry.COLUMN_REMARKS, mGatePass.getRemarks());
+            mJsonResponseString = QueryUtils.sendGetRequest(mUrl, mToken);
+            Log.v(LOG_TAG, "mJsonResponseString: " + mJsonResponseString);
 
-            // For Product JSONArray
-            Integer[] productKeys = mProductHashMap.keySet().toArray(new Integer[mProductHashMap.size()]);
-            Product product;
-            JSONObject productJson;
 
-            for (int i = 0; i < productKeys.length; i++) {
+        } else if (Api.CODE_POST_REQUEST == mRequestCode) {
+            // Getting data of a particular GatePass
+            JSONObject root = new JSONObject();
+            JSONObject gatePassJson = new JSONObject();
+            JSONArray productJsonArray = new JSONArray();
+            JSONArray materialJsonArray = new JSONArray();
 
-                product = mProductHashMap.get(productKeys[i]);
+            try {
+                // GatePass Object Info.
+                gatePassJson.put(GatePassEntry._ID, mGatePass.getId());
+                gatePassJson.put(GatePassEntry.COLUMN_PERSON_NAME, mGatePass.getPersonName());
+                gatePassJson.put(GatePassEntry.COLUMN_CONTACT_PHONE, mGatePass.getContactPhone());
+                gatePassJson.put(GatePassEntry.COLUMN_DESTINATION, mGatePass.getDestination());
+                gatePassJson.put(GatePassEntry.COLUMN_REMARKS, mGatePass.getRemarks());
 
-                productJson = new JSONObject();
+                // For Product JSONArray
+                Integer[] productKeys = mProductHashMap.keySet().toArray(new Integer[mProductHashMap.size()]);
+                Product product;
+                JSONObject productJson;
 
-                productJson.put(ProductEntry.COLUMN_PIVOT_PRODUCT_ID, product.getPivotProductId());
-                productJson.put(ProductEntry.COLUMN_PIVOT_QTY, product.getPivotQuantity());
+                for (int i = 0; i < productKeys.length; i++) {
 
-                productJsonArray.put(i, productJson);
+                    product = mProductHashMap.get(productKeys[i]);
 
+                    productJson = new JSONObject();
+
+                    productJson.put(ProductEntry.COLUMN_PIVOT_PRODUCT_ID, product.getPivotProductId());
+                    productJson.put(ProductEntry.COLUMN_PIVOT_QTY, product.getPivotQuantity());
+
+                    productJsonArray.put(i, productJson);
+
+                }
+
+                // For Material JSONArray
+                Integer [] materialKeys = mMaterialHashMap.keySet().toArray(new Integer[mMaterialHashMap.size()]);
+                Material material = null;
+                JSONObject materialJson = null;
+
+                for (int i=0; i < materialKeys.length; i++) {
+
+                    material = mMaterialHashMap.get(materialKeys[i]);
+
+                    materialJson = new JSONObject();
+                    materialJson.put(MaterialEntry.COLUMN_PIVOT_MATERIAL_ID, material.getPivotMaterialId());
+                    materialJson.put(MaterialEntry.COLUMN_PIVOT_QUANTITY , material.getPivotMaterialId());
+
+                    materialJsonArray.put(i, materialJson);
+
+                }
+
+                root.put(GatePassEntry.TABLE_NAME, gatePassJson); // Add GatePass Json
+                root.put(ProductEntry.TABLE_NAME, productJsonArray); // Add Product JSONArray
+                root.put(MaterialEntry.TABLE_NAME, materialJsonArray); // Add Material JSONArray
+
+//            Log.v(LOG_TAG, root.toString());
+                Log.v(LOG_TAG, "url: " + mUrl);
+                Log.v(LOG_TAG, "token: " + mToken);
+
+                mJsonResponseString = QueryUtils.sendPostRequest(mUrl, root, mToken);
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
 
-            // For Material JSONArray
-            Integer [] materialKeys = mMaterialHashMap.keySet().toArray(new Integer[mMaterialHashMap.size()]);
-            Material material = null;
-            JSONObject materialJson = null;
-
-            for (int i=0; i < materialKeys.length; i++) {
-
-                material = mMaterialHashMap.get(materialKeys[i]);
-
-                materialJson = new JSONObject();
-                materialJson.put(MaterialEntry.COLUMN_PIVOT_MATERIAL_ID, material.getPivotMaterialId());
-                materialJson.put(MaterialEntry.COLUMN_PIVOT_QUANTITY , material.getPivotMaterialId());
-
-                materialJsonArray.put(i, materialJson);
-
-            }
-
-            root.put(GatePassEntry.TABLE_NAME, gatePassJson); // Add GatePass Json
-            root.put(ProductEntry.TABLE_NAME, productJsonArray); // Add Product JSONArray
-            root.put(MaterialEntry.TABLE_NAME, materialJsonArray); // Add Material JSONArray
-
-            Log.v(LOG_TAG, root.toString());
-
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
+
 
         return mJsonResponseString;
     }

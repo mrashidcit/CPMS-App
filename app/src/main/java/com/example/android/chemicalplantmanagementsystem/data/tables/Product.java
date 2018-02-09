@@ -50,9 +50,17 @@ public class Product {
      * @param id
      * @param productCode
      * @param name
-     * @param deleteStatus
      * @param description
      */
+    public Product(int id, String productCode, String name,String description, int pivotQuantity) {
+        this.id = id;
+        this.productCode = productCode;
+        this.name = name;
+        this.description = description;
+        this.pivotQuantity = pivotQuantity;
+    }
+
+
     public Product(int id, String productCode, String name, int deleteStatus, String description) {
         this.id = id;
         this.productCode = productCode;

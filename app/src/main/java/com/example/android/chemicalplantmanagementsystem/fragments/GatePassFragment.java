@@ -24,8 +24,16 @@ import com.example.android.chemicalplantmanagementsystem.Api;
 import com.example.android.chemicalplantmanagementsystem.GenerateGatePassActivity;
 import com.example.android.chemicalplantmanagementsystem.R;
 import com.example.android.chemicalplantmanagementsystem.data.tables.GatePass;
+import com.example.android.chemicalplantmanagementsystem.data.tables.User;
 import com.example.android.chemicalplantmanagementsystem.data.tables.adapters.GatePassAdapter;
+import com.example.android.chemicalplantmanagementsystem.data.tables.providers.GatePassContract.GatePassEntry;
+import com.example.android.chemicalplantmanagementsystem.data.tables.providers.UserContract;
+import com.example.android.chemicalplantmanagementsystem.loaders.GatePassEditorLoader;
 import com.example.android.chemicalplantmanagementsystem.loaders.GatePassLoader;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,6 +50,9 @@ public class GatePassFragment extends Fragment
 
     private final static String LOG_TAG = GatePassFragment.class.getSimpleName();
     private static final int GATEPASS_LOADER_ID = 1001;
+
+    // use to which type of request we are making
+    private int mRequestCode;
 
     private ListView mGatePassListView;
     private ProgressBar mLoadingIndicator;
@@ -80,19 +91,64 @@ public class GatePassFragment extends Fragment
         mGatePassHashMap = new HashMap<Integer, GatePass>();
         mGatePassArrayList = new ArrayList<GatePass>();
 
-
-
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
         mGatePassListView.setAdapter(mGatePassAdapter);
         mGatePassListView.setOnItemClickListener(mGatePassListItemClickListener);
 
         // Generate and show Fake Data
-        generateFakeGatePasses();
+//        generateFakeGatePasses();
+
+
+
+        String jsonResponseString = "[{\"id\":1,\"person_name\":\"altaf driver\",\"contact_phone\":\"12345678901\",\"destination\":\"department1store\",\"remarks\":\"default remarks\",\"created_at\":\"2018-01-19 14:44:34\",\"updated_at\":\"2018-01-30 22:41:28\"},{\"id\":2,\"person_name\":\"usman\",\"contact_phone\":\"08738489387\",\"destination\":\"Lahore\",\"remarks\":\"Hello to the furtue\",\"created_at\":\"2018-01-29 21:54:16\",\"updated_at\":\"2018-01-29 21:54:16\"},{\"id\":18,\"person_name\":\"Ali Abrar\",\"contact_phone\":\"12345678901\",\"destination\":\"Lahore\",\"remarks\":\"sincere\",\"created_at\":\"2018-02-09 11:25:59\",\"updated_at\":\"2018-02-09 11:25:59\"},{\"id\":19,\"person_name\":\"Ali Abrar\",\"contact_phone\":\"12345678901\",\"destination\":\"Lahore\",\"remarks\":\"sincere\",\"created_at\":\"2018-02-09 11:30:55\",\"updated_at\":\"2018-02-09 11:30:55\"},{\"id\":20,\"person_name\":\"Ali Abrar\",\"contact_phone\":\"12345678901\",\"destination\":\"Lahore\",\"remarks\":\"sincere\",\"created_at\":\"2018-02-09 11:36:21\",\"updated_at\":\"2018-02-09 11:36:21\"},{\"id\":21,\"person_name\":\"Ali Abrar\",\"contact_phone\":\"12345678901\",\"destination\":\"Lahore\",\"remarks\":\"sincere\",\"created_at\":\"2018-02-09 11:39:29\",\"updated_at\":\"2018-02-09 11:39:29\"}]";
+
+
+//        Log.v(LOG_TAG, "jsonResponseString: " + jsonResponseString);
+
+        JSONArray jsonArray = null;
+        JSONObject gatePassJson = null;
+        try {
+            jsonArray = new JSONArray(jsonResponseString);
+
+
+            for (int i =0; i < jsonArray.length(); i++) {
+                gatePassJson = jsonArray.getJSONObject(i);
+
+                int id = gatePassJson.getInt(GatePassEntry._ID);
+                String personName = gatePassJson.getString(GatePassEntry.COLUMN_PERSON_NAME);
+                String contactPhone = gatePassJson.getString(GatePassEntry.COLUMN_CONTACT_PHONE);
+                String remarks = gatePassJson.getString(GatePassEntry.COLUMN_REMARKS);
+                String destination = gatePassJson.getString(GatePassEntry.COLUMN_DESTINATION);
+
+                mGatePassHashMap.put(id, new GatePass(id, personName, contactPhone, destination, remarks));
+
+//                Log.v(LOG_TAG, "( " + id + " , " +
+//                        personName + " , " +
+//                        contactPhone + " , " +
+//                        remarks + " , " +
+//                        destination + " )"
+//                );
+
+            }
+
+//            Log.v(LOG_TAG, "HashMapSize: " + mGatePassHashMap.size());
+
+            Integer [] mKeys = mGatePassHashMap.keySet().toArray(new Integer[mGatePassHashMap.size()]);
+            for (int i = 0; i < mGatePassHashMap.size(); i++) {
+
+                mGatePassArrayList.add(mGatePassHashMap.get(mKeys[i]));
+            }
+
+
         mLoadingIndicator.setVisibility(View.GONE);
         mGatePassAdapter.addAll(mGatePassArrayList);
         mGatePassAdapter.notifyDataSetChanged();
         mGatePassListView.performItemClick(mGatePassListView.getChildAt(0), 0, 0);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
 
 //        ConnectivityManager connMgr = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -101,7 +157,10 @@ public class GatePassFragment extends Fragment
 //
 //        if (networkInfo != null && networkInfo.isConnected()) {
 //            android.support.v4.app.LoaderManager loaderManager = getLoaderManager();
-//            loaderManager.initLoader(GATEPASS_LOADER_ID, null, this);
+//
+//            // we are maing GET request
+//            mRequestCode = Api.CODE_GET_REQUEST;
+//            loaderManager.initLoader(GATEPASS_LOADER_ID, new Bundle(), this);
 //
 //        } else {
 //
@@ -116,33 +175,44 @@ public class GatePassFragment extends Fragment
     @Override
     public android.support.v4.content.Loader onCreateLoader(int id, Bundle args) {
 
+        Log.v(LOG_TAG, "onCreateLoader()");
+
         mLoadingIndicator.setVisibility(View.VISIBLE); // Show ProgressBar
 
-        // Create a new loader for the give URL
-        return new GatePassLoader(mContext, Api.GATE_PASS_URL, Api.CODE_GET_REQUEST);
+        if (Api.CODE_GET_REQUEST == mRequestCode) {
+
+            args.putInt(Api.REQUEST_CODE, mRequestCode);
+            args.putString(UserContract.COLUMN_TOKEN, User.getToken(mContext));
+
+            return new GatePassEditorLoader(mContext, Api.GATE_PASS_URL, args);
+
+        }
+        return  null;
+
     }
 
     @Override
     public void onLoadFinished(android.support.v4.content.Loader loader, Object data) {
 
-        if ( data == null) {
-            return;
-        }
+        Log.v(LOG_TAG, "onLoadFinished()");
 
+//        if ( data == null) {
+//            return;
+//        }
         // otherwise hide Loading Indciator
-        mLoadingIndicator.setVisibility(View.GONE);
-
-        HashMap<Integer, GatePass> gatePassHashMap = (HashMap<Integer, GatePass>) data;
-
-        Integer mKeys[] = gatePassHashMap.keySet().toArray(new Integer[gatePassHashMap.size()]);
-        ArrayList<GatePass> gatePassArrayList = new ArrayList<GatePass>();
-        for (int i = 0; i < mKeys.length; i++) {
-            gatePassArrayList.add(gatePassHashMap.get(mKeys[i]));
-        }
-
-        mGatePassArrayList = gatePassArrayList;
-        mGatePassAdapter.addAll(mGatePassArrayList);
-        mGatePassAdapter.notifyDataSetChanged();
+//        mLoadingIndicator.setVisibility(View.GONE);
+//
+//        HashMap<Integer, GatePass> gatePassHashMap = (HashMap<Integer, GatePass>) data;
+//
+//        Integer mKeys[] = gatePassHashMap.keySet().toArray(new Integer[gatePassHashMap.size()]);
+//        ArrayList<GatePass> gatePassArrayList = new ArrayList<GatePass>();
+//        for (int i = 0; i < mKeys.length; i++) {
+//            gatePassArrayList.add(gatePassHashMap.get(mKeys[i]));
+//        }
+//
+//        mGatePassArrayList = gatePassArrayList;
+//        mGatePassAdapter.addAll(mGatePassArrayList);
+//        mGatePassAdapter.notifyDataSetChanged();
 
 //        mGatePassListView.performItemClick(mGatePassListView.getChildAt(0), 0, 0);
 
@@ -165,20 +235,17 @@ public class GatePassFragment extends Fragment
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-            Log.v(LOG_TAG, "position, id = " + position + " , " + id);
 
             GatePass currentGatePass = mGatePassArrayList.get(position);
 
             Bundle bundle = new Bundle();
             bundle.putSerializable("gate_pass", currentGatePass);
 
-            Fragment gatePassEditorFragment = new GatePassEditorFragment();
+            Fragment gatePassEditorFragment = new GatePassDetailFragment();
             gatePassEditorFragment.setArguments(bundle);
             FragmentTransaction  transaction = getFragmentManager().beginTransaction();
-
             transaction.replace(R.id.fragment_container, gatePassEditorFragment);
             transaction.addToBackStack(null);
-
             // Commit the transaction
             transaction.commit();
 

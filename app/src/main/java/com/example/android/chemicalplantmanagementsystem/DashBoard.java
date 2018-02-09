@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.android.chemicalplantmanagementsystem.fragments.DailyProductionFragment;
+import com.example.android.chemicalplantmanagementsystem.fragments.GatePassDetailFragment;
 import com.example.android.chemicalplantmanagementsystem.fragments.GatePassFragment;
 import com.example.android.chemicalplantmanagementsystem.fragments.NewProductionFragment;
 import com.example.android.chemicalplantmanagementsystem.fragments.ProductionFragment;
@@ -40,21 +41,30 @@ public class DashBoard extends AppCompatActivity
 
 
 
-        // Starting GatePass Fragment
-        // Create new Fragment and transaction
+        /** Starting GatePass Fragment
+          * Create new Fragment and transaction **/
         Fragment newFragment = new GatePassFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
         // Replace is in the fragment_container view with this fragment,
         // and add the transaction to the back stack
         transaction.replace(R.id.fragment_container, newFragment);
-
         transaction.addToBackStack(null);
-
         // Commit the transaction
         transaction.commit();
-        // Changing Title of the Activity
 
+        /** Starting GatePass Detail Fragment
+          * Create new Fragment and transaction **/
+//        Fragment newFragment = new GatePassDetailFragment();
+//        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//        // Replace is in the fragment_container view with this fragment,
+//        // and add the transaction to the back stack
+//        transaction.replace(R.id.fragment_container, newFragment);
+//        transaction.addToBackStack(null);
+//        // Commit the transaction
+//        transaction.commit();
+
+
+        // Changing Title of the Activity
         getSupportActionBar().setTitle("Gate Passes");
 
 
