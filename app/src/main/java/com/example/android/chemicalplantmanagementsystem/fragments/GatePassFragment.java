@@ -176,7 +176,6 @@ public class GatePassFragment extends Fragment
 
         }
         return null;
-
     }
 
     @Override

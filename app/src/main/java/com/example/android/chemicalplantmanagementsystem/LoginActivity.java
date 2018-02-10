@@ -8,6 +8,7 @@ import android.accounts.OperationCanceledException;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -126,10 +127,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-
-        // requesting for token
-        mAuthTask = new UserLoginTask("hello", "world");
-        mAuthTask.execute((Void) null);
+        attemptLogin();
 
 //        SharedPreferences pref = getSharedPreferences(PREFS_NAME, 0);
 //        String username = pref.getString(getString(R.string.pref_username_key), "");
@@ -354,12 +352,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             // Default Values
             mClientId = 1;
-            mClientSecret = "yC1y6EZ4nFgxN5QKYoNfR0Mm7RQPldFzwNY6HoJ6";
+            mClientSecret = Api.CLIENT_SECRET;
             mGrantType = "password";
             mScope = "*";
 
-            mEmail = mOAuthRequestData.getUserName();
-            mPassword = mOAuthRequestData.getPassword();
+            mEmail = email;
+            mPassword = password;
         }
 
         @Override
@@ -376,11 +374,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 
             try {
-                url = new URL("http://" + getString(R.string.host_address).toString() + "/oauth/token");
-                urlUserInfo = new URL("http://" + getString(R.string.host_address).toString() + "/api/userInfo");
+                url = new URL(Api.ROOT_URL + "/oauth/token");
+                urlUserInfo = new URL(Api.API_ROOT_URL + "/userInfo");
 //                url = new URL("http://" + getString(R.string.host_address).toString() + "/api/user");
 //                url = new URL("http://" + getString(R.string.host_address).toString() + "/api/test");
 
+                /**
+                 * Making POST request to get access_token
+                 */
                 json.put(OAuthRequestData.CLIENT_ID_KEY, mClientId);
                 json.put(OAuthRequestData.CLIENT_SECRET_KEY, mClientSecret);
                 json.put(OAuthRequestData.GRANT_TYPE_KEY, mGrantType);
@@ -409,6 +410,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     // Reading Stream from InputStream
                     inputStream = conn.getInputStream();
                     responseJsonObject = readFromStream(inputStream);
+
+
                     String  tokenType = responseJsonObject.getString(getString(R.string.pref_access_token_key));
                     String expiresIn = responseJsonObject.getString(getString(R.string.pref_expires_in_key));
                     String accessToken = responseJsonObject.getString(getString(R.string.pref_access_token_key));
@@ -470,13 +473,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         );
                     }
 
-
-                    return false;
                 } else {
-                    Log.v(LOG_TAG, "url: " + url.toString());
-                    Log.v(LOG_TAG, "ResponseCode: " + conn.getResponseCode());
-                    Log.v(LOG_TAG, "ResponseMessage: " + conn.getResponseMessage());
-
+                    Log.e(LOG_TAG, "url: " + url.toString());
+                    Log.e(LOG_TAG, "ResponseCode: " + conn.getResponseCode());
+                    Log.e(LOG_TAG, "ResponseMessage: " + conn.getResponseMessage());
 
                 }
 
@@ -524,7 +524,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
-                finish();
+//                finish();
+                Intent intent = new Intent(getBaseContext(), DashBoard.class);
+
+                startActivity(intent);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
