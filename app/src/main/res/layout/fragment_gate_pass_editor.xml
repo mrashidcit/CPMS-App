@@ -118,6 +118,7 @@
                     android:id="@+id/btn_add_product"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+
                     android:text="Add Product"
                     android:textAllCaps="false" />
 
@@ -203,11 +204,14 @@
                 android:id="@+id/btn_save"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Save" />
+                android:text="Save"
+                android:background="@android:color/darker_gray"
+                />
 
         </android.support.v7.widget.ButtonBarLayout>
 
         <Button
+
             android:visibility="gone"
             android:id="@+id/btn_refresh"
             android:layout_width="match_parent"

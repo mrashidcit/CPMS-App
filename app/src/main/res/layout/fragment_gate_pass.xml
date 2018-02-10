@@ -45,6 +45,17 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/tv_empty_view"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textAppearance="?android:textAppearanceMedium"
+
+        />
+
     <ProgressBar
         android:id="@+id/pb_loading_indicator"
         style="@style/Base.Widget.AppCompat.ProgressBar"

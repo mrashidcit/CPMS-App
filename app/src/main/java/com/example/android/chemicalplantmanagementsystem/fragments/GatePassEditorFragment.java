@@ -1,8 +1,10 @@
 package com.example.android.chemicalplantmanagementsystem.fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -137,6 +139,7 @@ public class GatePassEditorFragment extends Fragment
         mMaterialNamesArrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item);
         mMaterialNamesArrayAdapter.addAll(mMaterialNamesArrayList);
         mMaterialSpinner.setAdapter(mMaterialNamesArrayAdapter);
+        mLoaderManager = getLoaderManager();
 
         // Setting Click Listeners
         mSaveButtonView.setOnClickListener(mSaveButtonClicListener);
@@ -145,15 +148,13 @@ public class GatePassEditorFragment extends Fragment
         mAddMaterialButtonView.setOnClickListener(mAddMaterialClickListener);
 
 
-        // Setting Values
-        mPersonNameTextView.setText(mGatePass.getPersonName());
-        mContactPhoneTextView.setText(mGatePass.getContactPhone());
-        mDestinationTextView.setText(mGatePass.getDestination());
-        mRemarksTextView.setText(mGatePass.getRemarks());
+        // Entering Dummy data in EditeText Views
+        mPersonNameTextView.setText("Rashid Saleem");
+        mContactPhoneTextView.setText("09873987383");
+        mDestinationTextView.setText("Islamabad");
+        mRemarksTextView.setText("good service");
 
-        mLoaderManager = getLoaderManager();
 
-//        mSaveButtonView.performClick();
 
         HashMap<Integer, GatePass> gatePassHashMap = new HashMap<Integer, GatePass>();
         gatePassHashMap.put(mGatePass.getId(), mGatePass);
@@ -163,8 +164,7 @@ public class GatePassEditorFragment extends Fragment
 //        displayProducts();
 
 
-        // Adding data automatically
-
+        // Adding data automatically Product and Material List
         addProduct();
         mProductSpinner.setSelection(1);
         addProduct();
@@ -181,7 +181,33 @@ public class GatePassEditorFragment extends Fragment
         // Called on Save Button Clicked
 //        saveGatePass();
 
+//        clearAllViews();
+
+//        else if (mProductContainerView.getChildCount() <= 2) {
+//            Toast.makeText(getContext(), "Add at least on Product in the List!", Toast.LENGTH_LONG);
+//        }
+
+        Log.v(LOG_TAG, "onCreateView()");
         return v;
+    }
+
+    // Clear All Fields Called After Saving the GatePass to Database
+    private void clearAllViews() {
+        // Clear All Fields After Saving GatePass Data
+        mPersonNameTextView.setText("");
+        mContactPhoneTextView.setText("");
+        mDestinationTextView.setText("");
+        mRemarksTextView.setText("");
+        // Removing Product Items from Product Container
+        int totalProductItems = mProductContainerView.getChildCount();
+        for (int i = 2; i < totalProductItems; i++) {
+            mProductContainerView.removeViewAt(2);
+        }
+        // Removing Material Items from Product Container
+        int totalMaterialItems = mMaterialContainerView.getChildCount();
+        for (int i = 2; i < totalProductItems; i++) {
+            mMaterialContainerView.removeViewAt(2);
+        }
     }
 
     // Add Product to List
@@ -320,6 +346,19 @@ public class GatePassEditorFragment extends Fragment
         }
     }
 
+    private void toggleSaveButtonClickable() {
+
+        if(mSaveButtonView.isClickable() == true) {
+            mSaveButtonView.setClickable(false); //
+            mSaveButtonView.setBackgroundColor(Color.WHITE);
+        } else {
+            mSaveButtonView.setClickable(true);
+            mSaveButtonView.setBackgroundColor(Color.GRAY);
+        }
+
+
+    }
+
     // Click Listeners Implementation
     private View.OnClickListener mSaveButtonClicListener = new View.OnClickListener() {
         @Override
@@ -327,7 +366,7 @@ public class GatePassEditorFragment extends Fragment
 
             saveGatePass(); // Saving
 
-//            showGatePassLog();
+
         }
     };
 
@@ -454,8 +493,23 @@ public class GatePassEditorFragment extends Fragment
 
 
 
+
+
     // Save GatePass
     private void saveGatePass() {
+
+        // Sanity Check to All Fields
+        if (mPersonNameTextView.getText().toString().isEmpty() || mContactPhoneTextView.getText().toString().isEmpty() ||
+                mDestinationTextView.getText().toString().isEmpty() || mRemarksTextView.getText().toString().isEmpty() ){
+            Toast.makeText(getContext(), "Fill all fields!", Toast.LENGTH_LONG).show();
+            return;
+        } else if (mProductContainerView.getChildCount() <= 2 && mMaterialContainerView.getChildCount() <= 2) {
+            Toast.makeText(getContext(), "Add at least on Product/Material in the List!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        toggleSaveButtonClickable();
+
         mGatePass.setPersonName(mPersonNameTextView.getText().toString());
         mGatePass.setContactPhone(mContactPhoneTextView.getText().toString());
         mGatePass.setDestination(mDestinationTextView.getText().toString());
@@ -497,13 +551,8 @@ public class GatePassEditorFragment extends Fragment
 
         if (networkInfo != null && networkInfo.isConnected()) {
 
-            if (mLoaderManager.getLoader(GATEPASS_EDITOR_LOADER_ID) != null) {
-                mLoaderManager.destroyLoader(GATEPASS_EDITOR_LOADER_ID);
-
-            }
 
             mLoaderManager.initLoader(GATEPASS_EDITOR_LOADER_ID, new Bundle(), this);
-
 
         } else {
 
@@ -555,6 +604,7 @@ public class GatePassEditorFragment extends Fragment
 
             args.putInt(GatePassEntry._ID, mGatePass.getId());
             args.putString(UserContract.COLUMN_TOKEN, User.getToken(mContext));
+            args.putInt(Api.REQUEST_CODE, mRequestCode);
 
             return new GatePassEditorLoader(mContext, Api.GATE_PASS_URL, args);
 
@@ -562,6 +612,7 @@ public class GatePassEditorFragment extends Fragment
 
             args.putInt(GatePassEntry._ID, mGatePass.getId());
             args.putString(UserContract.COLUMN_TOKEN, User.getToken(mContext));
+            args.putInt(Api.REQUEST_CODE, mRequestCode);
 
             Log.v(LOG_TAG, "onCreateLoader()");
             return new GatePassEditorLoader(mContext, mGatePass, mProductHashMap, mMaterialHashMap, Api.GATE_PASS_URL, args);
@@ -580,7 +631,21 @@ public class GatePassEditorFragment extends Fragment
     @Override
     public void onLoadFinished(android.support.v4.content.Loader loader, Object data) {
 
-//        String jsonString = "{\"status\":\"success\",\"msg\":\"Successfully Created!\"}";
+        Log.v(LOG_TAG, "onLoadFinished()");
+
+        if (data == null) {
+            Log.v(LOG_TAG, "data is null onLoadFinished()");
+            Toast.makeText(getContext(), "Unable to get data from Server!", Toast.LENGTH_LONG).show();
+            toggleSaveButtonClickable();
+            return;
+        } else if (data.toString().isEmpty()) {
+            Log.v(LOG_TAG, "Error: SocketTimeoutException");
+            Toast.makeText(getContext(), "Error: SocketTimeoutException!", Toast.LENGTH_LONG).show();
+            toggleSaveButtonClickable();
+            return;
+        }
+
+
 
         String jsonString = data.toString();
 
@@ -590,6 +655,8 @@ public class GatePassEditorFragment extends Fragment
         try {
             jsonObject = new JSONObject(jsonString);
 
+            Toast.makeText(getContext(), "GatePass Successfully Saved!", Toast.LENGTH_LONG).show();
+
             Log.v(LOG_TAG, "status: " + jsonObject.getString("status"));
             Log.v(LOG_TAG, "msg: " + jsonObject.getString("msg"));
 
@@ -598,8 +665,10 @@ public class GatePassEditorFragment extends Fragment
             e.printStackTrace();
         }
 
+        toggleSaveButtonClickable(); // Enable Clicking on Save Button
+        clearAllViews(); // Clear All Fields after saving Data to the Database
 
-
+        getLoaderManager().destroyLoader(GATEPASS_EDITOR_LOADER_ID);
 
 //        if (data == null) {
 //            Toast.makeText(mContext, "Error in connectivity!", Toast.LENGTH_SHORT).show();

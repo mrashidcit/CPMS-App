@@ -52,6 +52,9 @@
     <string name="pref_access_token_key">access_token</string>
     <string name="pref_refresh_token_key">refresh_token</string>
 
+    <!-- Error message when there is no internet connectivity [CHAR LIMIT=NONE] -->
+    <string name="no_internet_connection">No internet connection.</string>
+
 
 </resources>
 

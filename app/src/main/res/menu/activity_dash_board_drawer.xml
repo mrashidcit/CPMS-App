@@ -18,21 +18,21 @@
             android:id="@+id/nav_production_create"
             android:title="---- Create" />
 
-        <item
-            android:id="@+id/nav_production_approve"
-            android:title="---- Approve" />
+        <!--<item-->
+            <!--android:id="@+id/nav_production_approve"-->
+            <!--android:title="&#45;&#45;&#45;&#45; Approve" />-->
 
-        <item
-            android:id="@+id/nav_production_complete"
-            android:title="---- Completed" />
+        <!--<item-->
+            <!--android:id="@+id/nav_production_complete"-->
+            <!--android:title="&#45;&#45;&#45;&#45; Completed" />-->
 
         <item
             android:id="@+id/nav_gatepass"
             android:title="Gate Pass" />
 
-        <item
-            android:id="@+id/nav_gatepass_view"
-            android:title="---- View" />
+        <!--<item-->
+            <!--android:id="@+id/nav_gatepass_view"-->
+            <!--android:title="&#45;&#45;&#45;&#45; View" />-->
 
         <item
             android:id="@+id/nav_gatepass_create"

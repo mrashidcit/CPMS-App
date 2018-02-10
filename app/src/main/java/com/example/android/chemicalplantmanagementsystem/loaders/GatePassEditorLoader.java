@@ -96,7 +96,7 @@ public class GatePassEditorLoader extends AsyncTaskLoader<String> {
         if (Api.CODE_GET_REQUEST == mRequestCode) {
 
             mJsonResponseString = QueryUtils.sendGetRequest(mUrl, mToken);
-            Log.v(LOG_TAG, "mJsonResponseString: " + mJsonResponseString);
+//            Log.v(LOG_TAG, "mJsonResponseString: " + mJsonResponseString);
 
 
         } else if (Api.CODE_POST_REQUEST == mRequestCode) {
@@ -154,8 +154,9 @@ public class GatePassEditorLoader extends AsyncTaskLoader<String> {
                 root.put(MaterialEntry.TABLE_NAME, materialJsonArray); // Add Material JSONArray
 
 //            Log.v(LOG_TAG, root.toString());
-                Log.v(LOG_TAG, "url: " + mUrl);
-                Log.v(LOG_TAG, "token: " + mToken);
+//                Log.v(LOG_TAG, "url: " + mUrl);
+//                Log.v(LOG_TAG, "token: " + mToken);
+
 
                 mJsonResponseString = QueryUtils.sendPostRequest(mUrl, root, mToken);
 

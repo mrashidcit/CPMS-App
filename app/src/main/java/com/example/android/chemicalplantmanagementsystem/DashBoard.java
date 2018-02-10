@@ -15,6 +15,7 @@ import android.view.MenuItem;
 
 import com.example.android.chemicalplantmanagementsystem.fragments.DailyProductionFragment;
 import com.example.android.chemicalplantmanagementsystem.fragments.GatePassDetailFragment;
+import com.example.android.chemicalplantmanagementsystem.fragments.GatePassEditorFragment;
 import com.example.android.chemicalplantmanagementsystem.fragments.GatePassFragment;
 import com.example.android.chemicalplantmanagementsystem.fragments.NewProductionFragment;
 import com.example.android.chemicalplantmanagementsystem.fragments.ProductionFragment;
@@ -54,7 +55,7 @@ public class DashBoard extends AppCompatActivity
 
         /** Starting GatePass Detail Fragment
           * Create new Fragment and transaction **/
-//        Fragment newFragment = new GatePassDetailFragment();
+//        Fragment newFragment = new GatePassEditorFragment();
 //        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 //        // Replace is in the fragment_container view with this fragment,
 //        // and add the transaction to the back stack
@@ -170,10 +171,19 @@ public class DashBoard extends AppCompatActivity
             transaction.commit();
 
         } else if (id == R.id.nav_gatepass_create) {
-            Intent generateGatePassIntent = new Intent(this, GenerateGatePassActivity.class);
 
-//            generateGatePassIntent.setAction(Intent.ACTION_VIEW);
-            startActivity(generateGatePassIntent);
+            // Create new fragment and transaction
+            Fragment newFragment = new GatePassEditorFragment();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            // Repleace is in the fragment_container view with this fragment,
+            // and add the transaction to the back stack
+            transaction.replace(R.id.fragment_container, newFragment);
+            transaction.addToBackStack(null);
+            // Commit the transaction
+            transaction.commit();
+            // Changing Title of the Activity
+            title = "New Gate Pass";
+            getSupportActionBar().setTitle(title);
 
         }
 
