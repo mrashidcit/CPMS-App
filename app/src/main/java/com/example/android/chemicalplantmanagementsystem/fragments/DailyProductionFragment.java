@@ -30,10 +30,8 @@ public class DailyProductionFragment extends Fragment{
 
     private static final String LOG_TAG = "MainActivity";
 
-
     private Button mSubmitView;
     private View mSelectProductContainer;
-
 
     private TextView  mProducedView;
     private TextView  mDispatchesView;
@@ -47,7 +45,6 @@ public class DailyProductionFragment extends Fragment{
     private int mCurrentProductPosition;
 
     private Product mCurrentProduct;
-
 
 
     @Override

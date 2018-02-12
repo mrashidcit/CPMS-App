@@ -149,10 +149,10 @@ public class GatePassEditorFragment extends Fragment
 
 
         // Entering Dummy data in EditeText Views
-        mPersonNameTextView.setText("Rashid Saleem");
-        mContactPhoneTextView.setText("09873987383");
-        mDestinationTextView.setText("Islamabad");
-        mRemarksTextView.setText("good service");
+//        mPersonNameTextView.setText("Rashid Saleem");
+//        mContactPhoneTextView.setText("09873987383");
+//        mDestinationTextView.setText("Islamabad");
+//        mRemarksTextView.setText("good service");
 
 
 
@@ -165,18 +165,18 @@ public class GatePassEditorFragment extends Fragment
 
 
         // Adding data automatically Product and Material List
-        addProduct();
-        mProductSpinner.setSelection(1);
-        addProduct();
-        mProductSpinner.setSelection(2);
-        addProduct();
+//        addProduct();
+//        mProductSpinner.setSelection(1);
+//        addProduct();
+//        mProductSpinner.setSelection(2);
+//        addProduct();
 
 
-        addMaterial();
-        mMaterialSpinner.setSelection(1);
-        addMaterial();
-        mMaterialSpinner.setSelection(2);
-        addMaterial();
+//        addMaterial();
+//        mMaterialSpinner.setSelection(1);
+//        addMaterial();
+//        mMaterialSpinner.setSelection(2);
+//        addMaterial();
 
         // Called on Save Button Clicked
 //        saveGatePass();
@@ -201,12 +201,20 @@ public class GatePassEditorFragment extends Fragment
         // Removing Product Items from Product Container
         int totalProductItems = mProductContainerView.getChildCount();
         for (int i = 2; i < totalProductItems; i++) {
-            mProductContainerView.removeViewAt(2);
+
+            if (mProductContainerView.getChildAt(2) == null) {
+                mProductContainerView.removeViewAt(2);
+            }
+
         }
         // Removing Material Items from Product Container
         int totalMaterialItems = mMaterialContainerView.getChildCount();
         for (int i = 2; i < totalProductItems; i++) {
-            mMaterialContainerView.removeViewAt(2);
+
+            if (mMaterialContainerView.getChildAt(2) != null){
+                mMaterialContainerView.removeViewAt(2);
+            }
+
         }
     }
 

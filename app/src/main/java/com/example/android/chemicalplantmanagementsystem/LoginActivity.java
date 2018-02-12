@@ -127,7 +127,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-        attemptLogin();
+//        attemptLogin();
 
 //        SharedPreferences pref = getSharedPreferences(PREFS_NAME, 0);
 //        String username = pref.getString(getString(R.string.pref_username_key), "");
