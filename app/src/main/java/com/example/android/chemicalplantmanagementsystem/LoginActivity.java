@@ -354,7 +354,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             // Default Values
             mClientId = 1;
-            mClientSecret = "yC1y6EZ4nFgxN5QKYoNfR0Mm7RQPldFzwNY6HoJ6";
+            mClientSecret = Api.CLIENT_SECRET;
             mGrantType = "password";
             mScope = "*";
 
