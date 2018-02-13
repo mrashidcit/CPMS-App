@@ -7,6 +7,7 @@
 
 
     <LinearLayout
+        android:visibility="gone"
         android:id="@+id/container_select_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,7 +24,7 @@
             android:textSize="18sp" />
 
         <Spinner
-            android:id="@+id/planets_spinner"
+            android:id="@+id/products_spinner"
             android:layout_width="fill_parent"
             android:layout_height="48dp"
             android:layout_marginLeft="20dp"
@@ -47,7 +48,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:visibility="gone"
+
         android:id="@+id/container_daily_production_form"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -167,15 +168,36 @@
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/btn_save"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="wrap_content"
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="100dp"
-            android:layout_marginTop="10dp"
-            android:text="Save"
-            android:textAllCaps="false" />
+            android:orientation="horizontal"
+            >
+
+            <Button
+                android:id="@+id/btn_back_to_products_selection"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginTop="10dp"
+                android:text="Back"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/btn_save"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Save"
+                android:textAllCaps="false" />
+
+
+
+        </LinearLayout>
+
+
 
 
     </LinearLayout>

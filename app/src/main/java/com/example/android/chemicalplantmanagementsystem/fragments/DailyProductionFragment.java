@@ -1,8 +1,14 @@
 package com.example.android.chemicalplantmanagementsystem.fragments;
 
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,13 +18,24 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.android.chemicalplantmanagementsystem.Api;
 import com.example.android.chemicalplantmanagementsystem.R;
 import com.example.android.chemicalplantmanagementsystem.data.tables.DailyProduction;
 import com.example.android.chemicalplantmanagementsystem.data.tables.Product;
+import com.example.android.chemicalplantmanagementsystem.data.tables.User;
+import com.example.android.chemicalplantmanagementsystem.data.tables.providers.ProductContract.ProductEntry;
+import com.example.android.chemicalplantmanagementsystem.data.tables.providers.UserContract;
+import com.example.android.chemicalplantmanagementsystem.loaders.DailyProductionLoader;
+import com.example.android.chemicalplantmanagementsystem.loaders.GatePassEditorLoader;
+import com.example.android.chemicalplantmanagementsystem.network.NetworkUtil;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -26,29 +43,35 @@ import java.util.List;
  * Use the {@link DailyProductionFragment} factory method to
  * create an instance of this fragment.
  */
-public class DailyProductionFragment extends Fragment{
+public class DailyProductionFragment extends Fragment
+                    implements LoaderManager.LoaderCallbacks{
 
-    private static final String LOG_TAG = "MainActivity";
-
+    private static final String LOG_TAG = DailyProductionFragment.class.getSimpleName();
+    private static final int DAILY_PRODCUTION_GET_PRODUCTS =  4001;
+    private static final int DAILY_PRODCUTION_POST_DATA = 4002;
 
     private Button mSubmitView;
     private View mSelectProductContainer;
+    private Context mContext;
+    private LoaderManager mLoaderManager;
+    private int mRequestCode;
+    private DailyProduction mDailyProduction;
 
-
+    private Spinner mProductSpinner;
     private TextView  mProducedView;
     private TextView  mDispatchesView;
     private TextView  mSaleReturnView;
     private TextView  mReceivedView;
     private Button mSaveButtonView;
+    private Button mBackToProductSelection;
     private View mDailyProductionFormContainer;
 
-    private List<Product> mProductList;
+    private ArrayList<Product> mProductArrayList;
+    private ArrayAdapter<String> mProductNamesArrayAdapter; // Used for Spinner
 
     private int mCurrentProductPosition;
 
     private Product mCurrentProduct;
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,45 +80,164 @@ public class DailyProductionFragment extends Fragment{
         View view =  inflater.inflate(R.layout.fragment_daily_production, container, false);
 
         // Getting Control Views Objects
+
         mProducedView = (TextView) view.findViewById(R.id.et_produced);
         mDispatchesView = (TextView) view.findViewById(R.id.et_dispatches);
         mSaleReturnView = (TextView) view.findViewById(R.id.et_sale_return);
         mReceivedView = (TextView) view.findViewById(R.id.et_received);
         mSaveButtonView = (Button) view.findViewById(R.id.btn_save);
+        mBackToProductSelection = (Button) view.findViewById(R.id.btn_back_to_products_selection);
 
+        // Setting Click Listeners
         mSaveButtonView.setOnClickListener(mSaveClickListener);
+        mBackToProductSelection.setOnClickListener(mBackToProductSelectionClickListener);
+
+        // Initializer the Data Members
+        mContext = getContext();
+        mLoaderManager = getLoaderManager();
+        mProductArrayList = new ArrayList<Product>();
+        mProductNamesArrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item);
 
         // Containers
         mSelectProductContainer = view.findViewById(R.id.container_select_product);
         mDailyProductionFormContainer = view.findViewById(R.id.container_daily_production_form);
 
-
-        Spinner spinner = (Spinner) view.findViewById(R.id.planets_spinner);
+        mProductSpinner = (Spinner) view.findViewById(R.id.products_spinner);
 
         mSubmitView = (Button) view.findViewById(R.id.btn_submit);
 
         mSubmitView.setOnClickListener(mSubmitClickListener);
 
-        mProductList = new ArrayList<Product>();
+        mProductSpinner.setAdapter(mProductNamesArrayAdapter);
+        mProductSpinner.setOnItemSelectedListener(spinnerItemSelectedListener);
 
-        mProductList.add(new Product(12, "ad333", "Mineral Water", 0, "Pure May be Fresh Water"));
-        mProductList.add(new Product(13, "ad333", "Fast Food", 0, "Pure May be Fresh Water"));
-        mProductList.add(new Product(14, "ad333", "Fresh Air", 0, "Pure May be Fresh Water"));
-        mProductList.add(new Product(15, "ad333", "Nothing", 0, "Pure May be Fresh Water"));
-        mProductList.add(new Product(16, "ad333", "Something", 0, "Pure May be Fresh Water"));
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item);
-
-        for (int i = 0; i < mProductList.size(); i++) {
-            adapter.add(mProductList.get(i).getName());
-        }
-        spinner.setAdapter(adapter);
-        mCurrentProductPosition = 0;
-        spinner.setOnItemSelectedListener(spinnerItemSelectedListener);
+        // Insert Dummy Data in Fields
+        mProducedView.setText(2 + "");
+        mDispatchesView.setText(23 + "");
+        mSaleReturnView.setText(4 + "");
+        mReceivedView.setText(5 + "");
 
         return view;
 
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.v(LOG_TAG, "onStart()");
+        extractProductsFromJson();
+        saveDailyProduction();
+
+//        fetchProducts();
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+//        mSubmitView.performClick();
+    }
+
+    // Extract Product Data from JsonString
+//    private void extractProductsFromJson() {
+    private void extractProductsFromJson(String jsonString) {
+//        String jsonString = "[{\"id\":1,\"product_code\":\"HPfQjt3NIr\",\"name\":\"product1\",\"delete_status\":1,\"description\":\"product1 default\",\"branch_id\":1,\"department_id\":1,\"company_id\":1,\"user_id\":1,\"unit_id\":1,\"created_at\":\"2018-01-19 14:44:28\",\"updated_at\":\"2018-01-19 14:44:28\"},{\"id\":2,\"product_code\":\"eJYZ6ZYsqnb\",\"name\":\"Mineral Water\",\"delete_status\":1,\"description\":\"sfe sdfg esdfe fse\",\"branch_id\":1,\"department_id\":1,\"company_id\":1,\"user_id\":1,\"unit_id\":1,\"created_at\":\"2018-01-30 21:57:38\",\"updated_at\":\"2018-01-30 21:57:38\"},{\"id\":3,\"product_code\":\"DwPQbJjtWxj\",\"name\":\"Air Fresher\",\"delete_status\":1,\"description\":\"sdf sdf efs esfd\",\"branch_id\":1,\"department_id\":1,\"company_id\":1,\"user_id\":1,\"unit_id\":1,\"created_at\":\"2018-01-30 21:58:41\",\"updated_at\":\"2018-01-30 21:58:41\"}]";
+
+        JSONArray productsJsonArray ;
+
+        try {
+            productsJsonArray = new JSONArray(jsonString);
+
+            JSONObject productObject;
+            int id ;
+            String name;
+            Product product;
+            for (int i = 0; i < productsJsonArray.length(); i++) {
+                productObject = productsJsonArray.getJSONObject(i);
+
+                id   = productObject.getInt(ProductEntry._ID);
+                name = productObject.getString(ProductEntry.COLUMN_NAME);
+
+                product = new Product(id, name);
+                mProductArrayList.add(product);
+
+            }
+
+            for (int i = 0; i < mProductArrayList.size(); i++) {
+                mProductNamesArrayAdapter.add(mProductArrayList.get(i).getName());
+            }
+            mProductNamesArrayAdapter.notifyDataSetChanged();
+            mCurrentProductPosition = 0;
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    // Used for Dummy Data Only
+    private void extractProductsFromJson() {
+        String jsonString = "[{\"id\":1,\"product_code\":\"HPfQjt3NIr\",\"name\":\"product1\",\"delete_status\":1,\"description\":\"product1 default\",\"branch_id\":1,\"department_id\":1,\"company_id\":1,\"user_id\":1,\"unit_id\":1,\"created_at\":\"2018-01-19 14:44:28\",\"updated_at\":\"2018-01-19 14:44:28\"},{\"id\":2,\"product_code\":\"eJYZ6ZYsqnb\",\"name\":\"Mineral Water\",\"delete_status\":1,\"description\":\"sfe sdfg esdfe fse\",\"branch_id\":1,\"department_id\":1,\"company_id\":1,\"user_id\":1,\"unit_id\":1,\"created_at\":\"2018-01-30 21:57:38\",\"updated_at\":\"2018-01-30 21:57:38\"},{\"id\":3,\"product_code\":\"DwPQbJjtWxj\",\"name\":\"Air Fresher\",\"delete_status\":1,\"description\":\"sdf sdf efs esfd\",\"branch_id\":1,\"department_id\":1,\"company_id\":1,\"user_id\":1,\"unit_id\":1,\"created_at\":\"2018-01-30 21:58:41\",\"updated_at\":\"2018-01-30 21:58:41\"}]";
+
+        JSONArray productsJsonArray ;
+
+        try {
+            productsJsonArray = new JSONArray(jsonString);
+
+            JSONObject productObject;
+            int id ;
+            String name;
+            Product product;
+            for (int i = 0; i < productsJsonArray.length(); i++) {
+                productObject = productsJsonArray.getJSONObject(i);
+
+                id   = productObject.getInt(ProductEntry._ID);
+                name = productObject.getString(ProductEntry.COLUMN_NAME);
+
+                product = new Product(id, name);
+                mProductArrayList.add(product);
+
+            }
+
+            for (int i = 0; i < mProductArrayList.size(); i++) {
+                mProductNamesArrayAdapter.add(mProductArrayList.get(i).getName());
+            }
+            mProductNamesArrayAdapter.notifyDataSetChanged();
+            mCurrentProductPosition = 0;
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        mCurrentProduct = mProductArrayList.get(mCurrentProductPosition);
+
+        Log.v(LOG_TAG, "id , name: " + mCurrentProduct.getId() + " , " + mCurrentProduct.getName());
+
+//        mSubmitView.performClick();
+
+    }
+
+    private void fetchProducts() {
+        mRequestCode = Api.CODE_GET_REQUEST;
+        ConnectivityManager connMgr = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+        if (networkInfo != null && networkInfo.isConnected()) {
+            Bundle args = new Bundle();
+            args.putString("url", Api.DAILY_PRODUCTION_CREATE_URL);
+            mLoaderManager.initLoader(DAILY_PRODCUTION_GET_PRODUCTS, args, this);
+
+        } else {
+
+            Toast.makeText(mContext, "Unable to Connect to Network!" , Toast.LENGTH_LONG).show();
+            Log.v(LOG_TAG, "Unable to Connect to Network!");
+        }
+    }
+
+
 
     // Click Listeners
     private AdapterView.OnItemSelectedListener spinnerItemSelectedListener = new AdapterView.OnItemSelectedListener() {
@@ -106,7 +248,7 @@ public class DailyProductionFragment extends Fragment{
 
             // Storing current Position of the product for temporary use
             mCurrentProductPosition = position;
-            Product currentProduct = mProductList.get(position);
+            Product currentProduct = mProductArrayList.get(position);
 
 
             Log.v("MainActivity", "(id, name)" + "(" +
@@ -125,7 +267,11 @@ public class DailyProductionFragment extends Fragment{
 
         @Override
         public void onClick(View v) {
-            mCurrentProduct = mProductList.get(mCurrentProductPosition);
+            mCurrentProductPosition = mProductSpinner.getSelectedItemPosition();
+
+            mCurrentProduct = mProductArrayList.get(mCurrentProductPosition);
+
+            Log.v(LOG_TAG, "id , name: " + mCurrentProduct.getId() + " , " + mCurrentProduct.getName());
 
             // Hiding container_select_product
             mSelectProductContainer.setVisibility(View.GONE);
@@ -133,14 +279,43 @@ public class DailyProductionFragment extends Fragment{
             // Showing container_daily_production_form
             mDailyProductionFormContainer.setVisibility(View.VISIBLE);
 
-            Log.v(LOG_TAG, "(id, name )" + "( " +
-                    mCurrentProduct.getId() + " , " +
-                    mCurrentProduct.getName() + " ) "
-            );
+        }
+    };
+
+    //  Toggle View of DailyProductionFormContainer
+    private void toggleDailyProductionFormContainer() {
+
+        if (mDailyProductionFormContainer.getVisibility() == View.VISIBLE) {
+            mDailyProductionFormContainer.setVisibility(View.GONE);
+
+        } else {
+            mDailyProductionFormContainer.setVisibility(View.VISIBLE);
+        }
+    }
+
+    // Toggle View of SelectProductContainer
+    private void toggleSelectProductContainer() {
+
+        if (mSelectProductContainer.getVisibility() == View.VISIBLE) {
+            mSelectProductContainer.setVisibility(View.GONE);
+        } else {
+            mSelectProductContainer.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+    // Back to Product Selection
+    private View.OnClickListener mBackToProductSelectionClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            toggleDailyProductionFormContainer(); // Hiding the Daily ProductionFromContainer
+            toggleSelectProductContainer();
 
         }
     };
 
+    // Save Button click Listener
     private View.OnClickListener mSaveClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -164,6 +339,99 @@ public class DailyProductionFragment extends Fragment{
         }
     };
 
+    private void saveDailyProduction() {
+
+        int productId = mCurrentProduct.getId();
+        int produced = Integer.parseInt(mProducedView.getText().toString());
+        int dispatches = Integer.parseInt(mDispatchesView.getText().toString());
+        int saleReturn = Integer.parseInt(mSaleReturnView.getText().toString());
+        int received = Integer.parseInt(mReceivedView.getText().toString());
+
+        mDailyProduction = new DailyProduction(productId, produced, dispatches, saleReturn, received);
+
+        Log.v(LOG_TAG, "saveDailyProduction()");
+
+        mRequestCode = Api.CODE_POST_REQUEST;
+        Boolean networkStatus =  NetworkUtil.isConnectedToNetwork(mContext, LOG_TAG);
+        if (networkStatus == true) {
+            Bundle args = new Bundle();
+            args.putString("url", Api.DAILY_PRODUCTION_URL);
+
+            mLoaderManager.initLoader(DAILY_PRODCUTION_POST_DATA, args, this);
+
+        } else {
+            Toast.makeText(mContext, mContext.getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+
+        }
+
+    }
 
 
+    @Override
+    public Loader onCreateLoader(int id, Bundle args) {
+
+        if (Api.CODE_GET_REQUEST == mRequestCode) {
+
+            args.putString(UserContract.COLUMN_TOKEN, User.getToken(mContext));
+            args.putInt(Api.REQUEST_CODE, mRequestCode);
+
+            return  new DailyProductionLoader(mContext, args);
+
+        } else if (Api.CODE_POST_REQUEST == mRequestCode) {
+
+            args.putString(UserContract.COLUMN_TOKEN, User.getToken(mContext));
+            args.putInt(Api.REQUEST_CODE, mRequestCode);
+
+            return new DailyProductionLoader(mContext, mDailyProduction, args);
+        }
+
+        return null;
+    }
+
+
+    @Override
+    public void onLoadFinished(Loader loader, Object data) {
+
+        Log.v(LOG_TAG, "onLoadFinished()");
+
+        if (data == null ) {
+            Log.v(LOG_TAG, "response data is null!");
+        } else if(data.toString().isEmpty()) {
+            Log.v(LOG_TAG, "response is empty!");
+        }
+
+        String jsonString = data.toString();
+        JSONObject jsonResponse;
+
+        try {
+            jsonResponse = new JSONObject(jsonString);
+
+            String status = jsonResponse.optString("status");
+
+            if (status != null && status == "success") {
+
+                Log.v(LOG_TAG, "status: " + "Successfully Saved!");
+            } else {
+
+
+            }
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        extractProductsFromJson(jsonString);
+
+//        Log.v(LOG_TAG, "jsonString: " + jsonString);
+
+
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader loader) {
+
+    }
 }

@@ -20,6 +20,8 @@ public class DailyProduction {
     public DailyProduction() {
     }
 
+
+
     /**
      *
      * @param productId

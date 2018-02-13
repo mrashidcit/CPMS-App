@@ -6,7 +6,6 @@ package com.example.android.chemicalplantmanagementsystem;
 
 public class Api {
 
-
     public static final String REQUEST_CODE = "request_code";
 
     public static final int CODE_GET_REQUEST = 1024;
@@ -15,7 +14,7 @@ public class Api {
 
     public static final String CLIENT_SECRET = "yC1y6EZ4nFgxN5QKYoNfR0Mm7RQPldFzwNY6HoJ6";
 
-    public static final String ROOT_URL = "http://192.168.0.136:8000";
+    public static final String ROOT_URL = "http://192.168.1.37:8000";
 
     public static final String API_ROOT_URL;
 
@@ -29,6 +28,12 @@ public class Api {
 
     // Gate Pass URLs
     public static final String GATE_PASS_URL = API_ROOT_URL + "/GatePass";
+    public static final String GATE_PASS_CREATE_URL = API_ROOT_URL + "/GatePass/create";
+
+    // Daily Production URLs
+    public static  final String DAILY_PRODUCTION_URL = API_ROOT_URL + "/DailyProduction";
+    public static  final String DAILY_PRODUCTION_CREATE_URL = API_ROOT_URL + "/DailyProduction/create";
+
 
 
 }

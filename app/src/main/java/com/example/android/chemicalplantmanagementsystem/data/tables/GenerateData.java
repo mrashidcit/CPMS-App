@@ -39,9 +39,6 @@ public class GenerateData {
 
     }
 
-
-
-
     // Return ProductsName ArrayList Mostly used for Spinner
     public static final ArrayList<String> getProductNamesArrayList(HashMap<Integer, Product> productHashMap) {
 
@@ -58,7 +55,6 @@ public class GenerateData {
         return productNamesArrayList;
 
     }
-
 
     // Return MaterialName ArrayList Mostly used for Spinner
     public static final ArrayList<String> getMaterialNamesArrayList(HashMap<Integer, Material> materialHashMap) {

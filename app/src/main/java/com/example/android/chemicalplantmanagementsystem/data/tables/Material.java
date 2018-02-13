@@ -31,6 +31,16 @@ public class Material {
 
     /**
      *
+     * @param id
+     * @param name
+     */
+    public Material(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    /**
+     *
      * @param pivotGatePassId
      * @param pivotMaterialId
      * @param pivotQuantity

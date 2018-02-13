@@ -45,6 +45,16 @@ public class Product {
     }
 
     /**
+     *
+     * @param id
+     * @param name
+     */
+    public Product(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    /**
      * Constructor
      *
      * @param id

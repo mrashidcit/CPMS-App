@@ -28,6 +28,7 @@ import com.example.android.chemicalplantmanagementsystem.data.tables.Product;
 import com.example.android.chemicalplantmanagementsystem.data.tables.User;
 import com.example.android.chemicalplantmanagementsystem.data.tables.providers.GatePassContract.GatePassEntry;
 import com.example.android.chemicalplantmanagementsystem.data.tables.providers.MaterialContract.MaterialEntry;
+import com.example.android.chemicalplantmanagementsystem.data.tables.providers.ProductContract;
 import com.example.android.chemicalplantmanagementsystem.data.tables.providers.ProductContract.ProductEntry;
 import com.example.android.chemicalplantmanagementsystem.data.tables.providers.UserContract;
 import com.example.android.chemicalplantmanagementsystem.loaders.GatePassEditorLoader;
@@ -52,6 +53,7 @@ public class GatePassEditorFragment extends Fragment
 
     public static final String LOG_TAG = GatePassEditorFragment.class.getSimpleName();
     private static final int GATEPASS_EDITOR_LOADER_ID = 1002;
+    private static final int GATEPASS_LOAD_PRODUCT_MATERIALS_LOADER_ID = 1002;
     private static final java.lang.String REQUEST_CODE = "request_code";
 
     // Controls
@@ -69,17 +71,17 @@ public class GatePassEditorFragment extends Fragment
     private Button mAddProductButtonView;
     private Button mAddMaterialButtonView;
 
-    private HashMap<Integer, Product> mAllProductHashMap;
+    private HashMap<Integer, Product> mAllProductHashMap; // All Products Comming from Database
     private Integer[] mProductKeys;
-    private ArrayList<String> mProductNamesArrayList;
-    private ArrayAdapter<String> mProductNamesArrayAdapter;
+    private ArrayList<String> mProductNamesArrayList; // Used for Spinner
+    private ArrayAdapter<String> mProductNamesArrayAdapter; // For spinner
     private Button mDelProductButtonView;
     private Button mDelMaterialButtonView;
 
-    private HashMap<Integer, Material> mAllMaterialHashMap;
+    private HashMap<Integer, Material> mAllMaterialHashMap; // All Materials Comming from Database
     private Integer[] mMaterialKeys;
-    private ArrayList<String> mMaterialNamesArrayList;
-    private ArrayAdapter<String> mMaterialNamesArrayAdapter;
+    private ArrayList<String> mMaterialNamesArrayList; // For Spinner
+    private ArrayAdapter<String> mMaterialNamesArrayAdapter; // for Spinner
 
     private JSONArray mProductsJsonArray;
     private JSONArray mMaterialJsonArray;
@@ -103,6 +105,9 @@ public class GatePassEditorFragment extends Fragment
 //        mGatePass = (GatePass) getArguments().getSerializable("gate_pass");
         mGatePass = new GatePass(3, "Ali Usman", "03033329738", "Lahore", "Sincere");
         mContext = getContext();
+        mLoaderManager = getLoaderManager();
+
+
 
         // Setting Controls
         mPersonNameTextView = (EditText) v.findViewById(R.id.et_persone_name);
@@ -123,23 +128,25 @@ public class GatePassEditorFragment extends Fragment
         // Initializin Data Members
         mMaterialHashMap = new HashMap<Integer, Material>();
         mProductHashMap = new HashMap<Integer, Product>();
+        mAllProductHashMap = new HashMap<Integer, Product>();
+        mAllMaterialHashMap = new HashMap<Integer, Material>();
 
         // All data members related to Product Spinner
-        mAllProductHashMap = GenerateData.fakeProducts();
-        mProductKeys = mAllProductHashMap.keySet().toArray(new Integer[mAllProductHashMap.size()]);
-        mProductNamesArrayList = GenerateData.getProductNamesArrayList(mAllProductHashMap);
-        mProductNamesArrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item);
-        mProductNamesArrayAdapter.addAll(mProductNamesArrayList);
-        mProductSpinner.setAdapter(mProductNamesArrayAdapter);
+//        mAllProductHashMap = GenerateData.fakeProducts();
+//        mProductKeys = mAllProductHashMap.keySet().toArray(new Integer[mAllProductHashMap.size()]);
+//        mProductNamesArrayList = GenerateData.getProductNamesArrayList(mAllProductHashMap);
+//        mProductNamesArrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item);
+//        mProductNamesArrayAdapter.addAll(mProductNamesArrayList);
+//        mProductSpinner.setAdapter(mProductNamesArrayAdapter);
 
         // All data members related to Material Spinner
-        mAllMaterialHashMap = GenerateData.fakeMaterials();
-        mMaterialKeys = mAllMaterialHashMap.keySet().toArray(new Integer[mAllMaterialHashMap.size()]);
-        mMaterialNamesArrayList = GenerateData.getMaterialNamesArrayList(mAllMaterialHashMap);
-        mMaterialNamesArrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item);
-        mMaterialNamesArrayAdapter.addAll(mMaterialNamesArrayList);
-        mMaterialSpinner.setAdapter(mMaterialNamesArrayAdapter);
-        mLoaderManager = getLoaderManager();
+//        mAllMaterialHashMap = GenerateData.fakeMaterials();
+//        mMaterialKeys = mAllMaterialHashMap.keySet().toArray(new Integer[mAllMaterialHashMap.size()]);
+//        mMaterialNamesArrayList = GenerateData.getMaterialNamesArrayList(mAllMaterialHashMap);
+//        mMaterialNamesArrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item);
+//        mMaterialNamesArrayAdapter.addAll(mMaterialNamesArrayList);
+//        mMaterialSpinner.setAdapter(mMaterialNamesArrayAdapter);
+
 
         // Setting Click Listeners
         mSaveButtonView.setOnClickListener(mSaveButtonClicListener);
@@ -149,10 +156,10 @@ public class GatePassEditorFragment extends Fragment
 
 
         // Entering Dummy data in EditeText Views
-        mPersonNameTextView.setText("Rashid Saleem");
-        mContactPhoneTextView.setText("09873987383");
-        mDestinationTextView.setText("Islamabad");
-        mRemarksTextView.setText("good service");
+//        mPersonNameTextView.setText("Rashid Saleem");
+//        mContactPhoneTextView.setText("09873987383");
+//        mDestinationTextView.setText("Islamabad");
+//        mRemarksTextView.setText("good service");
 
 
 
@@ -165,30 +172,104 @@ public class GatePassEditorFragment extends Fragment
 
 
         // Adding data automatically Product and Material List
-        addProduct();
-        mProductSpinner.setSelection(1);
-        addProduct();
-        mProductSpinner.setSelection(2);
-        addProduct();
+//        addProduct();
+//        mProductSpinner.setSelection(1);
+//        addProduct();
+//        mProductSpinner.setSelection(2);
+//        addProduct();
 
-
-        addMaterial();
-        mMaterialSpinner.setSelection(1);
-        addMaterial();
-        mMaterialSpinner.setSelection(2);
-        addMaterial();
+//        addMaterial();
+//        mMaterialSpinner.setSelection(1);
+//        addMaterial();
+//        mMaterialSpinner.setSelection(2);
+//        addMaterial();
 
         // Called on Save Button Clicked
 //        saveGatePass();
 
 //        clearAllViews();
 
-//        else if (mProductContainerView.getChildCount() <= 2) {
-//            Toast.makeText(getContext(), "Add at least on Product in the List!", Toast.LENGTH_LONG);
-//        }
-
         Log.v(LOG_TAG, "onCreateView()");
         return v;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.v(LOG_TAG, "onStart()");
+        getProductsAndMaterials();
+//        extractProductAndMaterialFromJson();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+
+    // Extract Product and Materials Items From Network
+//    private void ProductAndMaterialFromJson() {
+    private void extractProductAndMaterialFromJson(String jsonString) {
+
+//        String jsonString = "{\"products\":[{\"id\":1,\"product_code\":\"HPfQjt3NIr\",\"name\":\"product1\",\"delete_status\":1,\"description\":\"product1 default\",\"branch_id\":1,\"department_id\":1,\"company_id\":1,\"user_id\":1,\"unit_id\":1,\"created_at\":\"2018-01-19 14:44:28\",\"updated_at\":\"2018-01-19 14:44:28\"},{\"id\":2,\"product_code\":\"eJYZ6ZYsqnb\",\"name\":\"Mineral Water\",\"delete_status\":1,\"description\":\"sfe sdfg esdfe fse\",\"branch_id\":1,\"department_id\":1,\"company_id\":1,\"user_id\":1,\"unit_id\":1,\"created_at\":\"2018-01-30 21:57:38\",\"updated_at\":\"2018-01-30 21:57:38\"},{\"id\":3,\"product_code\":\"DwPQbJjtWxj\",\"name\":\"Air Fresher\",\"delete_status\":1,\"description\":\"sdf sdf efs esfd\",\"branch_id\":1,\"department_id\":1,\"company_id\":1,\"user_id\":1,\"unit_id\":1,\"created_at\":\"2018-01-30 21:58:41\",\"updated_at\":\"2018-01-30 21:58:41\"}],\"materials\":[{\"id\":1,\"material_code\":\"qMnKffk7wW\",\"name\":\"material1\",\"delete_status\":1,\"description\":\"material1 default\",\"user_id\":1,\"unit_id\":1,\"branch_id\":1,\"department_id\":1,\"company_id\":1,\"created_at\":\"2018-01-19 14:44:28\",\"updated_at\":\"2018-01-19 14:44:28\"},{\"id\":2,\"material_code\":\"ksXfVlCgprL\",\"name\":\"O2\",\"delete_status\":1,\"description\":\"Oxegyn\",\"user_id\":1,\"unit_id\":1,\"branch_id\":1,\"department_id\":1,\"company_id\":1,\"created_at\":\"2018-01-30 21:48:20\",\"updated_at\":\"2018-01-30 21:48:20\"},{\"id\":3,\"material_code\":\"NzuCKzqAGbD\",\"name\":\"Dark Water\",\"delete_status\":1,\"description\":\"kdi kjeijkl flkjikje\",\"user_id\":1,\"unit_id\":1,\"branch_id\":1,\"department_id\":1,\"company_id\":1,\"created_at\":\"2018-01-30 21:55:10\",\"updated_at\":\"2018-01-30 21:56:19\"}]}";
+
+        JSONObject root = null;
+        JSONArray productsJsonArray = null;
+        JSONArray materialsJsonArray = null;
+        try {
+            root = new JSONObject(jsonString);
+
+            productsJsonArray = root.getJSONArray(ProductEntry.TABLE_NAME);
+
+            int id ;
+            String name;
+            JSONObject productObject = null;
+
+            for (int i =0; i < productsJsonArray.length(); i++) {
+
+                productObject = productsJsonArray.getJSONObject(i);
+
+                id = productObject.getInt(ProductEntry._ID);
+                name = productObject.getString(ProductEntry.COLUMN_NAME);
+
+                Product product = new Product(id, name);
+                mAllProductHashMap.put(id, product);
+
+                Log.v(LOG_TAG, "id , name : " + product.getId() + " , " + product.getName());
+            }
+
+            materialsJsonArray = root.getJSONArray(MaterialEntry.TABLE_NAME);
+
+            JSONObject materialObject = null;
+            for (int i = 0; i < materialsJsonArray.length(); i++) {
+                materialObject = materialsJsonArray.getJSONObject(i);
+                id = materialObject.getInt(MaterialEntry._ID);
+                name = materialObject.getString(MaterialEntry.COLUMN_NAME);
+
+                Material material = new Material(id, name);
+                mAllMaterialHashMap.put(id, material);
+
+//                Log.v(LOG_TAG, "id , name: " + material.getId() + " , " + material.getName());
+            }
+
+            // All data members related to Product Spinner
+            mProductKeys = mAllProductHashMap.keySet().toArray(new Integer[mAllProductHashMap.size()]);
+            mProductNamesArrayList = GenerateData.getProductNamesArrayList(mAllProductHashMap);
+            mProductNamesArrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item);
+            mProductNamesArrayAdapter.addAll(mProductNamesArrayList);
+            mProductSpinner.setAdapter(mProductNamesArrayAdapter);
+
+            // All data members related to Material Spinner
+            mMaterialKeys = mAllMaterialHashMap.keySet().toArray(new Integer[mAllMaterialHashMap.size()]);
+            mMaterialNamesArrayList = GenerateData.getMaterialNamesArrayList(mAllMaterialHashMap);
+            mMaterialNamesArrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item);
+            mMaterialNamesArrayAdapter.addAll(mMaterialNamesArrayList);
+            mMaterialSpinner.setAdapter(mMaterialNamesArrayAdapter);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     // Clear All Fields Called After Saving the GatePass to Database
@@ -201,12 +282,20 @@ public class GatePassEditorFragment extends Fragment
         // Removing Product Items from Product Container
         int totalProductItems = mProductContainerView.getChildCount();
         for (int i = 2; i < totalProductItems; i++) {
-            mProductContainerView.removeViewAt(2);
+
+            if (mProductContainerView.getChildAt(2) != null) {
+                mProductContainerView.removeViewAt(2);
+            }
+
         }
         // Removing Material Items from Product Container
         int totalMaterialItems = mMaterialContainerView.getChildCount();
         for (int i = 2; i < totalProductItems; i++) {
-            mMaterialContainerView.removeViewAt(2);
+
+            if (mMaterialContainerView.getChildAt(2) != null){
+                mMaterialContainerView.removeViewAt(2);
+            }
+
         }
     }
 
@@ -492,7 +581,25 @@ public class GatePassEditorFragment extends Fragment
     }
 
 
+    // Get Product and Material Items
+    private void getProductsAndMaterials() {
 
+        mRequestCode = Api.CODE_GET_REQUEST;
+        ConnectivityManager connMgr = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+        if (networkInfo != null && networkInfo.isConnected()) {
+            Bundle args = new Bundle();
+            args.putString("url", Api.GATE_PASS_CREATE_URL);
+            mLoaderManager.initLoader(GATEPASS_LOAD_PRODUCT_MATERIALS_LOADER_ID, args, this);
+
+        } else {
+
+            Toast.makeText(mContext, "Unable to Connect to Network!" , Toast.LENGTH_LONG).show();
+            Log.v(LOG_TAG, "Unable to Connect to Network!");
+        }
+
+    }
 
 
     // Save GatePass
@@ -545,7 +652,6 @@ public class GatePassEditorFragment extends Fragment
         }
 
         mRequestCode = Api.CODE_POST_REQUEST;
-
         ConnectivityManager connMgr = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
@@ -606,7 +712,7 @@ public class GatePassEditorFragment extends Fragment
             args.putString(UserContract.COLUMN_TOKEN, User.getToken(mContext));
             args.putInt(Api.REQUEST_CODE, mRequestCode);
 
-            return new GatePassEditorLoader(mContext, Api.GATE_PASS_URL, args);
+            return new GatePassEditorLoader(mContext, args.getString("url"), args);
 
         } else if (Api.CODE_POST_REQUEST == mRequestCode) {
 
@@ -645,121 +751,34 @@ public class GatePassEditorFragment extends Fragment
             return;
         }
 
-
-
         String jsonString = data.toString();
 
-        Log.v(LOG_TAG, jsonString);
+//        Log.v(LOG_TAG, "responseString: " + jsonString);
 
         JSONObject jsonObject = null;
         try {
+
             jsonObject = new JSONObject(jsonString);
 
-            Toast.makeText(getContext(), "GatePass Successfully Saved!", Toast.LENGTH_LONG).show();
+            // If jsonString has Products Array It means we want Products and Materials
+            // data to show in spinners
+            if (jsonObject.optJSONArray(ProductEntry.TABLE_NAME) != null) {
 
-            Log.v(LOG_TAG, "status: " + jsonObject.getString("status"));
-            Log.v(LOG_TAG, "msg: " + jsonObject.getString("msg"));
+                extractProductAndMaterialFromJson(jsonString);
 
+            } else if (jsonObject.optString("status") !=  null) {
+                Toast.makeText(getContext(), "GatePass Successfully Saved!", Toast.LENGTH_LONG).show();
+
+                Log.v(LOG_TAG, "status , msg : " + jsonObject.getString("status") + " , " + jsonObject.getString("msg"));
+                toggleSaveButtonClickable(); // Enable Clicking on Save Button
+                clearAllViews(); // Clear All Fields after saving Data to the Database
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        toggleSaveButtonClickable(); // Enable Clicking on Save Button
-        clearAllViews(); // Clear All Fields after saving Data to the Database
-
         getLoaderManager().destroyLoader(GATEPASS_EDITOR_LOADER_ID);
-
-//        if (data == null) {
-//            Toast.makeText(mContext, "Error in connectivity!", Toast.LENGTH_SHORT).show();
-//
-//            return;
-//        }
-
-
-//        JSONObject root;
-//        JSONObject gatePassJson;
-//        JSONObject productJson;
-//        JSONObject materialJson;
-//        JSONObject pivotJson;
-//        try {
-//            root = new JSONObject(data.toString());
-//
-//            // currently not using this becuase gatepass data already exists
-//            gatePassJson = root.getJSONObject("gatepass");
-//
-//            JSONArray productsArray = root.getJSONArray("products");
-//
-//
-//            for (int i = 0; i < productsArray.length(); i++) {
-//                productJson = productsArray.getJSONObject(i);
-//
-//                int id = productJson.getInt(ProductEntry._ID);
-//                String productCode = productJson.getString(ProductEntry.COLUMN_PRODUCT_CODE);
-//                String name = productJson.getString(ProductEntry.COLUMN_NAME);
-//                int deleteStatus = productJson.getInt(ProductEntry.COLUMN_DELETE_STATUS);
-//                String description = productJson.getString(ProductEntry.COLUMN_DESCRIPTION);
-//                int userId = productJson.getInt(ProductEntry.COLUMN_USER_ID);
-//
-//                pivotJson = productJson.getJSONObject("pivot");
-//
-//                // Pivot Table Columns
-//                int pivotGatePassId = pivotJson.getInt(ProductEntry.COLUMN_PIVOT_GATE_PASS_ID);
-//                int pivotProductId = pivotJson.getInt(ProductEntry.COLUMN_PIVOT_PRODUCT_ID);
-//                int pivotQuantity = pivotJson.getInt(ProductEntry.COLUMN_PIVOT_QTY);
-//
-//                Product product = new Product(id, productCode, name, deleteStatus, description, userId, pivotGatePassId, pivotGatePassId, pivotQuantity);
-//
-//                mProductHashMap.put(id, product);
-//
-//            }
-//
-//            JSONArray materialsArray = root.getJSONArray("materials");
-//
-//            for (int i = 0; i < materialsArray.length(); i++) {
-//                materialJson = materialsArray.getJSONObject(i);
-//
-//                int id = materialJson.getInt(MaterialEntry._ID);
-//                String materialCode = materialJson.getString(MaterialEntry.COLUMN_MATERIAL_CODE);
-//                String name = materialJson.getString(MaterialEntry.COLUMN_NAME);
-//                int deleteStatus = materialJson.getInt(MaterialEntry.COLUMN_DELETE_STATUS);
-//                String description = materialJson.getString(MaterialEntry.COLUMN_DESCRIPTION);
-//                int userId = materialJson.getInt(MaterialEntry.COLUMN_USER_ID);
-//
-//                pivotJson = materialJson.getJSONObject("pivot");
-//                int pivotGatePassId = pivotJson.getInt(MaterialEntry.COLUMN_PIVOT_GATE_PASS_ID);
-//                int pivotMaterialId = pivotJson.getInt(MaterialEntry.COLUMN_PIVOT_MATERIAL_ID);
-//                int pivotQuantity = pivotJson.getInt(MaterialEntry.COLUMN_PIVOT_QUANTITY);
-//
-//                Material material = new Material(id, materialCode, name, deleteStatus, description, userId, pivotGatePassId, pivotMaterialId, pivotQuantity);
-//
-//                mMaterialHashMap.put(id, material);
-//
-//            }
-//
-//
-//
-//
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//
-//
-//        displayProducts();
-//        displayMaterials();
-
-//        Log.v(LOG_TAG, "response: " + data.toString());
-
-
-//        HashMap<Integer, GatePass> gatePassHashMap = (HashMap<Integer, GatePass>) data;
-//
-//        if (gatePassHashMap.size() > 0) {
-//
-//            Toast.makeText(mContext, "Updated Successfully!", Toast.LENGTH_SHORT).show();
-//
-////            Log.v(LOG_TAG, "Updated Successfuly!");
-//        }
-
 
     }
 

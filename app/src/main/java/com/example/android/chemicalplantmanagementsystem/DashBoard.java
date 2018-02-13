@@ -30,7 +30,6 @@ public class DashBoard extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -40,11 +39,9 @@ public class DashBoard extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
-
         /** Starting GatePass Fragment
           * Create new Fragment and transaction **/
-        Fragment newFragment = new GatePassFragment();
+        Fragment newFragment = new DailyProductionFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         // Replace is in the fragment_container view with this fragment,
         // and add the transaction to the back stack
@@ -53,29 +50,21 @@ public class DashBoard extends AppCompatActivity
         // Commit the transaction
         transaction.commit();
 
-        /** Starting GatePass Detail Fragment
-          * Create new Fragment and transaction **/
-//        Fragment newFragment = new GatePassEditorFragment();
-//        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-//        // Replace is in the fragment_container view with this fragment,
-//        // and add the transaction to the back stack
-//        transaction.replace(R.id.fragment_container, newFragment);
-//        transaction.addToBackStack(null);
-//        // Commit the transaction
-//        transaction.commit();
-
-
         // Changing Title of the Activity
         getSupportActionBar().setTitle("Gate Passes");
-
 
     }
 
 //    @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        int count = getFragmentManager().getBackStackEntryCount();
+
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else if (count > 0) {
+            getFragmentManager().popBackStack();
         } else {
             super.onBackPressed();
         }
@@ -102,6 +91,7 @@ public class DashBoard extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -156,34 +146,6 @@ public class DashBoard extends AppCompatActivity
 
             // Commit the transaction
             transaction.commit();
-
-        } else if (id == R.id.nav_production_create) {
-            // Create new Fragmet and transaction
-            Fragment newFragment = new NewProductionFragment();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-            // Replace in the fragment_container view with this fragment,
-            // and add the transaction to the back stack
-            transaction.replace(R.id.fragment_container, newFragment);
-            transaction.addToBackStack(null);
-
-            // Commit the transaction
-            transaction.commit();
-
-        } else if (id == R.id.nav_gatepass_create) {
-
-            // Create new fragment and transaction
-            Fragment newFragment = new GatePassEditorFragment();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            // Repleace is in the fragment_container view with this fragment,
-            // and add the transaction to the back stack
-            transaction.replace(R.id.fragment_container, newFragment);
-            transaction.addToBackStack(null);
-            // Commit the transaction
-            transaction.commit();
-            // Changing Title of the Activity
-            title = "New Gate Pass";
-            getSupportActionBar().setTitle(title);
 
         }
 
