@@ -58,6 +58,7 @@ public class DailyProductionFragment extends Fragment
     private DailyProduction mDailyProduction;
 
     private Spinner mProductSpinner;
+    private TextView mProductNameView;
     private TextView  mProducedView;
     private TextView  mDispatchesView;
     private TextView  mSaleReturnView;
@@ -80,7 +81,7 @@ public class DailyProductionFragment extends Fragment
         View view =  inflater.inflate(R.layout.fragment_daily_production, container, false);
 
         // Getting Control Views Objects
-
+        mProductNameView = (TextView) view.findViewById(R.id.tv_product_name);
         mProducedView = (TextView) view.findViewById(R.id.et_produced);
         mDispatchesView = (TextView) view.findViewById(R.id.et_dispatches);
         mSaleReturnView = (TextView) view.findViewById(R.id.et_sale_return);
@@ -112,10 +113,10 @@ public class DailyProductionFragment extends Fragment
         mProductSpinner.setOnItemSelectedListener(spinnerItemSelectedListener);
 
         // Insert Dummy Data in Fields
-        mProducedView.setText(2 + "");
-        mDispatchesView.setText(23 + "");
-        mSaleReturnView.setText(4 + "");
-        mReceivedView.setText(5 + "");
+//        mProducedView.setText(2 + "");
+//        mDispatchesView.setText(23 + "");
+//        mSaleReturnView.setText(4 + "");
+//        mReceivedView.setText(5 + "");
 
         return view;
 
@@ -125,10 +126,8 @@ public class DailyProductionFragment extends Fragment
     public void onStart() {
         super.onStart();
         Log.v(LOG_TAG, "onStart()");
-        extractProductsFromJson();
-        saveDailyProduction();
-
-//        fetchProducts();
+//        extractProductsFromJson();
+        fetchProducts();
 
     }
 
@@ -139,15 +138,27 @@ public class DailyProductionFragment extends Fragment
 //        mSubmitView.performClick();
     }
 
+    // Clear All Fields after Saving Data
+    private void clearAllFields() {
+
+        mProducedView.setText("");
+        mDispatchesView.setText("");
+        mSaleReturnView.setText("");
+        mReceivedView.setText("");
+    }
+
     // Extract Product Data from JsonString
 //    private void extractProductsFromJson() {
     private void extractProductsFromJson(String jsonString) {
 //        String jsonString = "[{\"id\":1,\"product_code\":\"HPfQjt3NIr\",\"name\":\"product1\",\"delete_status\":1,\"description\":\"product1 default\",\"branch_id\":1,\"department_id\":1,\"company_id\":1,\"user_id\":1,\"unit_id\":1,\"created_at\":\"2018-01-19 14:44:28\",\"updated_at\":\"2018-01-19 14:44:28\"},{\"id\":2,\"product_code\":\"eJYZ6ZYsqnb\",\"name\":\"Mineral Water\",\"delete_status\":1,\"description\":\"sfe sdfg esdfe fse\",\"branch_id\":1,\"department_id\":1,\"company_id\":1,\"user_id\":1,\"unit_id\":1,\"created_at\":\"2018-01-30 21:57:38\",\"updated_at\":\"2018-01-30 21:57:38\"},{\"id\":3,\"product_code\":\"DwPQbJjtWxj\",\"name\":\"Air Fresher\",\"delete_status\":1,\"description\":\"sdf sdf efs esfd\",\"branch_id\":1,\"department_id\":1,\"company_id\":1,\"user_id\":1,\"unit_id\":1,\"created_at\":\"2018-01-30 21:58:41\",\"updated_at\":\"2018-01-30 21:58:41\"}]";
 
+        JSONObject root;
         JSONArray productsJsonArray ;
 
         try {
-            productsJsonArray = new JSONArray(jsonString);
+            root = new JSONObject(jsonString);
+
+            productsJsonArray = root.optJSONArray(ProductEntry.TABLE_NAME);
 
             JSONObject productObject;
             int id ;
@@ -178,7 +189,7 @@ public class DailyProductionFragment extends Fragment
     }
 
     // Used for Dummy Data Only
-    private void extractProductsFromJson() {
+    private void  extractProductsFromJson() {
         String jsonString = "[{\"id\":1,\"product_code\":\"HPfQjt3NIr\",\"name\":\"product1\",\"delete_status\":1,\"description\":\"product1 default\",\"branch_id\":1,\"department_id\":1,\"company_id\":1,\"user_id\":1,\"unit_id\":1,\"created_at\":\"2018-01-19 14:44:28\",\"updated_at\":\"2018-01-19 14:44:28\"},{\"id\":2,\"product_code\":\"eJYZ6ZYsqnb\",\"name\":\"Mineral Water\",\"delete_status\":1,\"description\":\"sfe sdfg esdfe fse\",\"branch_id\":1,\"department_id\":1,\"company_id\":1,\"user_id\":1,\"unit_id\":1,\"created_at\":\"2018-01-30 21:57:38\",\"updated_at\":\"2018-01-30 21:57:38\"},{\"id\":3,\"product_code\":\"DwPQbJjtWxj\",\"name\":\"Air Fresher\",\"delete_status\":1,\"description\":\"sdf sdf efs esfd\",\"branch_id\":1,\"department_id\":1,\"company_id\":1,\"user_id\":1,\"unit_id\":1,\"created_at\":\"2018-01-30 21:58:41\",\"updated_at\":\"2018-01-30 21:58:41\"}]";
 
         JSONArray productsJsonArray ;
@@ -263,6 +274,7 @@ public class DailyProductionFragment extends Fragment
         }
     };
 
+    // Click Listener for Submit Button
     private View.OnClickListener mSubmitClickListener = new View.OnClickListener() {
 
         @Override
@@ -271,13 +283,14 @@ public class DailyProductionFragment extends Fragment
 
             mCurrentProduct = mProductArrayList.get(mCurrentProductPosition);
 
-            Log.v(LOG_TAG, "id , name: " + mCurrentProduct.getId() + " , " + mCurrentProduct.getName());
+//            Log.v(LOG_TAG, "id , name: " + mCurrentProduct.getId() + " , " + mCurrentProduct.getName());
 
             // Hiding container_select_product
             mSelectProductContainer.setVisibility(View.GONE);
 
             // Showing container_daily_production_form
             mDailyProductionFormContainer.setVisibility(View.VISIBLE);
+            mProductNameView.setText(mCurrentProduct.getName());
 
         }
     };
@@ -327,13 +340,15 @@ public class DailyProductionFragment extends Fragment
 
             DailyProduction dailyProduction = new DailyProduction(productId, produced, dispatches, saleReturn, received);
 
-            Log.v(LOG_TAG, "(id, produced, dispatches, saleReturn, received) = ( " +
-                    dailyProduction.getProductId() + " , " +
-                    dailyProduction.getProduced() + " , " +
-                    dailyProduction.getDispatches() + " , " +
-                    dailyProduction.getSaleReturn() + " , " +
-                    dailyProduction.getReceived() + " ) "
-            );
+//            Log.v(LOG_TAG, "(id, produced, dispatches, saleReturn, received) = ( " +
+//                    dailyProduction.getProductId() + " , " +
+//                    dailyProduction.getProduced() + " , " +
+//                    dailyProduction.getDispatches() + " , " +
+//                    dailyProduction.getSaleReturn() + " , " +
+//                    dailyProduction.getReceived() + " ) "
+//            );
+
+            saveDailyProduction();
 
 
         }
@@ -370,6 +385,8 @@ public class DailyProductionFragment extends Fragment
     @Override
     public Loader onCreateLoader(int id, Bundle args) {
 
+        Log.v(LOG_TAG, "onCreateLoader()");
+
         if (Api.CODE_GET_REQUEST == mRequestCode) {
 
             args.putString(UserContract.COLUMN_TOKEN, User.getToken(mContext));
@@ -396,37 +413,41 @@ public class DailyProductionFragment extends Fragment
 
         if (data == null ) {
             Log.v(LOG_TAG, "response data is null!");
+            Toast.makeText(mContext, "Unable to connect to Server", Toast.LENGTH_LONG).show();
         } else if(data.toString().isEmpty()) {
             Log.v(LOG_TAG, "response is empty!");
+            Toast.makeText(mContext, "Unable to connect to Server", Toast.LENGTH_LONG).show();
         }
 
         String jsonString = data.toString();
         JSONObject jsonResponse;
 
         try {
+
             jsonResponse = new JSONObject(jsonString);
 
             String status = jsonResponse.optString("status");
 
-            if (status != null && status == "success") {
+            if (status != null && status.equals("success")) {
 
                 Log.v(LOG_TAG, "status: " + "Successfully Saved!");
-            } else {
+                Toast.makeText(mContext, "Successfully Saved!", Toast.LENGTH_LONG).show();
 
+                clearAllFields(); // After Saving Data Clear All the Fields
 
+            } else if (jsonResponse.optJSONArray(ProductEntry.TABLE_NAME) != null){
+
+                extractProductsFromJson(jsonString);
             }
 
 
         } catch (JSONException e) {
             e.printStackTrace();
+        } finally {
+            mLoaderManager.destroyLoader(DAILY_PRODCUTION_POST_DATA);
         }
 
-
-        extractProductsFromJson(jsonString);
-
-//        Log.v(LOG_TAG, "jsonString: " + jsonString);
-
-
+        mLoaderManager.destroyLoader(DAILY_PRODCUTION_POST_DATA);
 
     }
 

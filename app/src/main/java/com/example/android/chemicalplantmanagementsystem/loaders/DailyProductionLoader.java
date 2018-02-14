@@ -104,6 +104,6 @@ public class DailyProductionLoader extends AsyncTaskLoader<String> {
 
         }
 
-        return null;
+        return mJsonResponseString;
     }
 }

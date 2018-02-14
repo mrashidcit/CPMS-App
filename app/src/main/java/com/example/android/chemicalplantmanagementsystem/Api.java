@@ -14,7 +14,7 @@ public class Api {
 
     public static final String CLIENT_SECRET = "yC1y6EZ4nFgxN5QKYoNfR0Mm7RQPldFzwNY6HoJ6";
 
-    public static final String ROOT_URL = "http://192.168.1.37:8000";
+    public static final String ROOT_URL = "http://192.168.1.36:8000";
 
     public static final String API_ROOT_URL;
 

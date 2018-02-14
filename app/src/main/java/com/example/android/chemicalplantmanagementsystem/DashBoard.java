@@ -100,7 +100,22 @@ public class DashBoard extends AppCompatActivity
         int id = item.getItemId();
         String title = "";
 
-        if (id == R.id.nav_production) {
+        if (id == R.id.nav_daily_production) {
+            // Create new Fragment and transaction
+            Fragment newFragment = new DailyProductionFragment();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            // Replacte is in the fragment_container view with this fragment,
+            // and add the transaction to the back stack
+            transaction.replace(R.id.fragment_container, newFragment);
+            transaction.addToBackStack(null);
+            // Commit the transaction
+            transaction.commit();
+
+            // Changing Title of the Activity
+            title = "Daily Productions";
+            getSupportActionBar().setTitle(title);
+
+        } else if (id == R.id.nav_production) {
 
             // Create new fragment and transaction
             Fragment newFragment = new ProductionFragment();
@@ -133,19 +148,6 @@ public class DashBoard extends AppCompatActivity
             // Changing Title of the Activity
             title = "Gate Passes";
             getSupportActionBar().setTitle(title);
-
-        } else if (id == R.id.nav_daily_production) {
-            // Create new Fragment and transaction
-            Fragment newFragment = new DailyProductionFragment();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-            // Replacte is in the fragment_container view with this fragment,
-            // and add the transaction to the back stack
-            transaction.replace(R.id.fragment_container, newFragment);
-            transaction.addToBackStack(null);
-
-            // Commit the transaction
-            transaction.commit();
 
         }
 
