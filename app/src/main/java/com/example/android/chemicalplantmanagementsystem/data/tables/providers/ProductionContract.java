@@ -82,6 +82,30 @@ public class ProductionContract {
          */
         public final static String COLUMN_UPDATED_AT = "updated_at";
 
+        /**
+         * Type: INTEGER
+         */
+        public final static String PIVOT_PRODUCTION_ID = "production_id";
+
+        /**
+         * Type: INTEGER
+         */
+        public final static String PIVOT_PRODUCT_ID = "product_id";
+
+        /**
+         * Type: INTEGER
+         */
+        public final static String PIVOT_QUANTITY = "quantity";
+
+
+        public final static int PENDING_STATUS = 1;
+        public final static int APPROVED_STATUS = 3;
+        public final static int COMPLETED_STATUS = 4;
+
+
+
+
+
         public final static String generateProductionCode(){
             String possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             String productionCode = "";

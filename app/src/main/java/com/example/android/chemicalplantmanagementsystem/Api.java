@@ -34,6 +34,12 @@ public class Api {
     public static  final String DAILY_PRODUCTION_URL = API_ROOT_URL + "/DailyProduction";
     public static  final String DAILY_PRODUCTION_CREATE_URL = API_ROOT_URL + "/DailyProduction/create";
 
+    // Productions URLs
+    public static  final String PRODUCTIONS_URL = API_ROOT_URL + "/Production";
+    public static  final String PRODUCTIONS_CREATE_URL = API_ROOT_URL + "/Production/create";
+
+
+
 
 
 }

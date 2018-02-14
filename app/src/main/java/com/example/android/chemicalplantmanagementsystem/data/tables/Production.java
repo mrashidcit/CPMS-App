@@ -1,10 +1,16 @@
 package com.example.android.chemicalplantmanagementsystem.data.tables;
 
+import android.util.Log;
+
+import com.example.android.chemicalplantmanagementsystem.data.tables.providers.ProductionContract;
+
+import java.io.Serializable;
+
 /**
  * Created by Rashid Saleem on 15-Jan-18.
  */
 
-public class Production {
+public class Production implements Serializable {
     private int id; // Primary Key
     private String productionCode;
     private String productionName;
@@ -20,8 +26,7 @@ public class Production {
      * @param productionName
      * @param productionCode
      * @param productionStatus
-
-     */
+\     */
     public Production(String productionCode, String productionName, int productionStatus) {
         this.productionName = productionName;
         this.productionCode = productionCode;
@@ -29,6 +34,21 @@ public class Production {
 
     }
 
+    /**
+     *
+     * @param id
+     * @param productionName
+     * @param productionCode
+     * @param productionStatus
+     * @param description
+     */
+    public Production(int id,  String productionName, String productionCode, int productionStatus, String description) {
+        this.id = id;
+        this.productionCode = productionCode;
+        this.productionName = productionName;
+        this.productionStatus = productionStatus;
+        this.description = description;
+    }
 
     // Setter Methods
     public void setId(int id) {
@@ -104,4 +124,23 @@ public class Production {
     public int getUserId() {
         return userId;
     }
+
+
+    public static final String getStatusMessage(int status) {
+
+        String msg;
+
+        if (status == ProductionContract.ProductionEntry.PENDING_STATUS) {
+            msg = "Pending";
+        } else if (status == ProductionContract.ProductionEntry.APPROVED_STATUS) {
+            msg = "Approved";
+        } else if (status == ProductionContract.ProductionEntry.COMPLETED_STATUS) {
+            msg = "Completed";
+        } else {
+            msg = "Unknown";
+        }
+
+        return msg;
+    }
+
 }

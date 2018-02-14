@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.example.android.chemicalplantmanagementsystem.R;
 import com.example.android.chemicalplantmanagementsystem.data.tables.Production;
+import com.example.android.chemicalplantmanagementsystem.data.tables.providers.ProductionContract.ProductionEntry;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class ProductionAdapter extends ArrayAdapter<Production> {
     }
 
 
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -38,26 +40,28 @@ public class ProductionAdapter extends ArrayAdapter<Production> {
             Production currentProductionItem = getItem(position);
 
             // Find the textView with view ID's
-            TextView productionCodeView = (TextView) listItemView.findViewById(R.id.tv_production_code);
-            TextView productionNameView = (TextView) listItemView.findViewById(R.id.tv_production_name);
-            TextView productionStatusView = (TextView) listItemView.findViewById(R.id.tv_production_status);
+            TextView productionNameView = (TextView) listItemView.findViewById(R.id.tv_name);
+            TextView productionStatusView = (TextView) listItemView.findViewById(R.id.tv_status);
+            TextView productionDescriptionView = (TextView) listItemView.findViewById(R.id.tv_description);
 
-            productionCodeView.setText(currentProductionItem.getProductionCode());
+
             productionNameView.setText(currentProductionItem.getProductionName());
-            productionStatusView.setText(currentProductionItem.getProductionStatus() + "");
+            productionDescriptionView.setText(currentProductionItem.getDescription());
+
+            int status = currentProductionItem.getProductionStatus();
+            if (status == ProductionEntry.PENDING_STATUS){
+                productionStatusView.setText("Pending");
+            } else if (status == ProductionEntry.APPROVED_STATUS){
+                productionStatusView.setText("Approved");
+            }else if (status == ProductionEntry.COMPLETED_STATUS){
+                productionStatusView.setText("completed");
+            } else {
+                productionStatusView.setText("Unknown");
+            }
+
         }
 
         return listItemView;
     }
 }
-
-
-
-
-
-
-
-
-
-
 

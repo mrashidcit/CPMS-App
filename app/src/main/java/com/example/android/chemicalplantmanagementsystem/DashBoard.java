@@ -39,9 +39,12 @@ public class DashBoard extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        // Changing Title of the Activity
+
+        getSupportActionBar().setTitle("Production");
         /** Starting GatePass Fragment
           * Create new Fragment and transaction **/
-        Fragment newFragment = new DailyProductionFragment();
+        Fragment newFragment = new ProductionFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         // Replace is in the fragment_container view with this fragment,
         // and add the transaction to the back stack
@@ -168,5 +171,9 @@ public class DashBoard extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void setActionBarTitle(String title) {
+        getSupportActionBar().setTitle(title);
     }
 }
