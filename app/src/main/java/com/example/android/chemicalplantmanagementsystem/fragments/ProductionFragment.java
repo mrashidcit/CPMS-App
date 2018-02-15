@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.chemicalplantmanagementsystem.Api;
@@ -57,8 +59,11 @@ public class ProductionFragment extends Fragment
     private Context mContext;
     private LoaderManager mLoaderManager;
 
+
     // View Elements
     private ListView mProductionListView;
+    private ProgressBar mLoadingIndicatorView;
+    private TextView mEmptyStateView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,13 +74,16 @@ public class ProductionFragment extends Fragment
         // Initialize Data Members
         mContext = getContext();
         mLoaderManager = getLoaderManager();
+
         mProductionHashMap = new HashMap<Integer, Production>();
         mProductionArrayList = new ArrayList<Production>();
-
         mProductionAdapter = new ProductionAdapter(getContext(), new ArrayList<Production>());
 
         mProductionListView = (ListView) productionView.findViewById(R.id.list_production);
+        mLoadingIndicatorView = (ProgressBar) productionView.findViewById(R.id.pb_loading_indicator);
+        mEmptyStateView = (TextView) productionView.findViewById(R.id.tv_empty_view);
 
+        mProductionListView.setEmptyView(mEmptyStateView);
 
         // Setting Click Listeners
         mProductionListView.setOnItemClickListener(mProductionListViewOnItemClickListener);
@@ -91,9 +99,9 @@ public class ProductionFragment extends Fragment
     public void onStart() {
         super.onStart();
         Log.v(LOG_TAG, "onStart()");
-//        fetchProductionData();
-        extractProductionDataFromJsonString();
-        extractProductionDataFromJsonString();
+        fetchProductionData();
+//        extractProductionDataFromJsonString();
+
 //        mProductionListView.performItemClick(mProductionListView.getChildAt(2), 2, 2);
 
     }
@@ -253,11 +261,13 @@ public class ProductionFragment extends Fragment
 
     }
 
-
     @Override
     public Loader onCreateLoader(int id, Bundle args) {
 
         Log.v(LOG_TAG, "onCreateLoader()");
+
+        mLoadingIndicatorView.setVisibility(View.VISIBLE); // show loading indicator
+        mEmptyStateView.setText(""); // hide stat view
 
         if (Api.CODE_GET_REQUEST == mRequestCode) {
 
@@ -275,11 +285,17 @@ public class ProductionFragment extends Fragment
     public void onLoadFinished(Loader loader, Object data) {
         Log.v(LOG_TAG, "onLoadFinished()");
 
+        mLoadingIndicatorView.setVisibility(View.GONE); // Hiding Loading Indicator
+
         if (data == null ) {
             Log.v(LOG_TAG, "response data is null!");
+            mEmptyStateView.setVisibility(View.VISIBLE); // Showing Status View
+            mEmptyStateView.setText("Unable to connect to Server");
             Toast.makeText(mContext, "Unable to connect to Server", Toast.LENGTH_LONG).show();
         } else if(data.toString().isEmpty()) {
             Log.v(LOG_TAG, "response is empty!");
+            mEmptyStateView.setVisibility(View.VISIBLE); // Showing Status View
+            mEmptyStateView.setText("Unable to connect to Server");
             Toast.makeText(mContext, "Unable to connect to Server", Toast.LENGTH_LONG).show();
         }
         String jsonString = data.toString();
@@ -297,7 +313,7 @@ public class ProductionFragment extends Fragment
 
 //            clearAllFields(); // After Saving Data Clear All the Fields
 
-            } else if (jsonResponse.optJSONArray(ProductEntry.TABLE_NAME) != null){
+            } else if (jsonResponse.optJSONArray(ProductionEntry.TABLE_NAME) != null){
 
                 extractProductionDataFromJsonString(jsonString);
             }
@@ -308,8 +324,7 @@ public class ProductionFragment extends Fragment
             mLoaderManager.destroyLoader(PRODUCTION_GET_DATA);
         }
 
-
-        Log.v(LOG_TAG, "jsonString: " + jsonString);
+//        Log.v(LOG_TAG, "jsonString: " + jsonString);
 
         mLoaderManager.destroyLoader(PRODUCTION_GET_DATA);
 

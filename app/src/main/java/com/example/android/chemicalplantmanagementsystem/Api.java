@@ -39,6 +39,8 @@ public class Api {
     public static  final String PRODUCTIONS_CREATE_URL = API_ROOT_URL + "/Production/create";
 
 
+    // Production Notifications
+    public static  final String PRODUCTION_NOTIFICATION_URL = API_ROOT_URL + "/Notifications";
 
 
 

@@ -36,10 +36,12 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.chemicalplantmanagementsystem.data.tables.OAuthRequestData;
 import com.example.android.chemicalplantmanagementsystem.data.tables.User;
 import com.example.android.chemicalplantmanagementsystem.data.tables.providers.UserContract.UserEntry;
+import com.example.android.chemicalplantmanagementsystem.network.NetworkUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -95,6 +97,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private TextView mMessageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,12 +129,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        mMessageView = (TextView) findViewById(R.id.tv_message_view);
 
 //        attemptLogin();
 
-//        SharedPreferences pref = getSharedPreferences(PREFS_NAME, 0);
-//        String username = pref.getString(getString(R.string.pref_username_key), "");
-//        String password = pref.getString(getString(R.string.pref_password_key), "");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.v(LOG_TAG, "onStart()");
+
+        Boolean loginStatus = User.isLoggedIn(getBaseContext());
+
+        if (loginStatus == true) {
+            finish();
+            Intent intent = new Intent(getBaseContext(), DashBoard.class);
+            startActivity(intent);
+        }
+
 
     }
 
@@ -185,7 +201,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
+
         if (mAuthTask != null) {
+            return;
+        }
+
+        Boolean networkStatus = NetworkUtil.isConnectedToNetwork(getBaseContext(), LOG_TAG);
+
+        if (networkStatus == false) {
+            String msg = getBaseContext().getString(R.string.no_internet_connection);
+            Log.v(LOG_TAG, msg);
+            mMessageView.setText(msg);
             return;
         }
 
@@ -335,7 +361,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserLoginTask extends AsyncTask<Void, Void, JSONObject> {
 
         private final int mClientId;
         private final String mClientSecret;
@@ -344,11 +370,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         private final String mPassword;
         private final String mScope;
 
-        private final OAuthRequestData mOAuthRequestData;
-
-
         UserLoginTask(String email, String password) {
-            mOAuthRequestData = new OAuthRequestData();
 
             // Default Values
             mClientId = 1;
@@ -361,8 +383,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected JSONObject doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
+
+
+
+
+            mMessageView.setText(""); // Make Message View Blank
+
+            Boolean status = false;
+
+            JSONObject responseJsonObject = null;
 
             URL url;
             URL urlUserInfo;
@@ -370,14 +401,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             HttpURLConnection conn = null;
             InputStream inputStream = null;
             JSONObject json = new JSONObject();
-            JSONObject responseJsonObject = null;
 
 
             try {
                 url = new URL(Api.ROOT_URL + "/oauth/token");
                 urlUserInfo = new URL(Api.API_ROOT_URL + "/userInfo");
-//                url = new URL("http://" + getString(R.string.host_address).toString() + "/api/user");
-//                url = new URL("http://" + getString(R.string.host_address).toString() + "/api/test");
 
                 /**
                  * Making POST request to get access_token
@@ -401,82 +429,29 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 osw.write(json.toString());
                 osw.flush();
 
-
                 if (conn.getResponseCode() == 200) {
-                    Log.v(LOG_TAG, "url = " + url.toString());
-                    Log.v(LOG_TAG, "ResponseCode = " + conn.getResponseCode());
-                    Log.v(LOG_TAG, "ResponseMessage = " + conn.getResponseMessage());
-
                     // Reading Stream from InputStream
                     inputStream = conn.getInputStream();
                     responseJsonObject = readFromStream(inputStream);
 
+                } else if (conn.getResponseCode() == 401) { // Unauthorized
+                    // Reading Stream from InputStream
 
-                    String  tokenType = responseJsonObject.getString(getString(R.string.pref_access_token_key));
-                    String expiresIn = responseJsonObject.getString(getString(R.string.pref_expires_in_key));
-                    String accessToken = responseJsonObject.getString(getString(R.string.pref_access_token_key));
-                    String refreshToken = responseJsonObject.getString(getString(R.string.pref_refresh_token_key));
+                    inputStream = conn.getErrorStream();
+                    responseJsonObject = readFromStream(inputStream);
 
-//                    Log.v(LOG_TAG, "tokenType =  " + tokenType);
-//                    Log.v(LOG_TAG, "accessToken = " + accessToken);
-//                    Log.v(LOG_TAG, "expiresIn = " + expiresIn);
-//                    Log.v(LOG_TAG, "refreshToken =  " + refreshToken);
-
-                    // Store data In Preference
-//                    storeData(responseJsonObject);
-                    SharedPreferences pref = getSharedPreferences(UserEntry.TABLE_NAME, 0);
-                    SharedPreferences.Editor prefEditor = pref.edit();
-                    prefEditor.putString(getString(R.string.pref_username_key), mEmail);
-                    prefEditor.putString(getString(R.string.pref_password_key), mPassword);
-                    prefEditor.putString(getString(R.string.pref_token_type_key), tokenType);
-                    prefEditor.putString(getString(R.string.pref_expires_in_key), expiresIn);
-                    prefEditor.putString(getString(R.string.pref_access_token_key), accessToken);
-                    prefEditor.putString(getString(R.string.pref_refresh_token_key),refreshToken );
-                    prefEditor.commit();
-
-
-                    /**
-                     * Now Getting All User Info
-                     */
-                    conn = (HttpURLConnection) urlUserInfo.openConnection();
-                    conn.setRequestMethod("GET");
-
-                    if (conn.getResponseCode() == 200) {
-
-                        inputStream = conn.getInputStream();
-
-                        // Reading from Stream
-                        StringBuilder userInfoString = new StringBuilder();
-                        if (inputStream != null) {
-                            InputStreamReader inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
-                            BufferedReader reader = new BufferedReader(inputStreamReader);
-                            String line = reader.readLine();
-                            while(line != null) {
-                                userInfoString.append(line);
-                                line = reader.readLine();
-                            }
-                        }
-
-//                        Log.v(LOG_TAG, "UserInfoString = " + userInfoString.toString());
-
-                        // Extract UserInfo from JSON Object
-                        JSONObject userInfoJSON =  User.readUserFromJson(userInfoString.toString(), getBaseContext());
-
-                        Log.v(LOG_TAG, "UserInfoJSON = " + userInfoJSON.toString());
-
-
-                    } else {
-
-                        Log.v(LOG_TAG, "(ResponseCode , ResponseMessage) = ( " +
-                                conn.getResponseCode() + " , " +
-                                conn.getResponseMessage()
-                        );
-                    }
+                    Log.v(LOG_TAG, "jsonResponse: " + responseJsonObject.toString());
 
                 } else {
                     Log.e(LOG_TAG, "url: " + url.toString());
-                    Log.e(LOG_TAG, "ResponseCode: " + conn.getResponseCode());
-                    Log.e(LOG_TAG, "ResponseMessage: " + conn.getResponseMessage());
+                    Log.e(LOG_TAG, "ResponseCode , ResponseMessage: " +
+                            conn.getResponseCode() + " , " +
+                            conn.getResponseMessage()
+                    );
+
+                    // Reading Stream from InputStream
+                    inputStream = conn.getInputStream();
+                    responseJsonObject = readFromStream(inputStream);
 
                 }
 
@@ -505,33 +480,81 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
 
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
-            return true;
+           // TODO: register the new account here.
+            return responseJsonObject;
 
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
+        protected void onPostExecute(final JSONObject jsonObject) {
             mAuthTask = null;
             showProgress(false);
 
-            if (success) {
-//                finish();
-                Intent intent = new Intent(getBaseContext(), DashBoard.class);
+            if (jsonObject == null) {
 
+//                Log.v(LOG_TAG, "Unable to connect to Server!");
+                mMessageView.setText("Unable to connect to Server!");
+
+            } else if (jsonObject.optString("error") != null && jsonObject.optString("error").equals( "invalid_client")) {
+
+//                Log.v(LOG_TAG, "Invalid Client contact you Administrator!");
+                mMessageView.setText("Invalid Client contact you Administrator!");
+
+            } else if (jsonObject.optString("error") != null  && jsonObject.optString("error").equals("invalid_credentials")) {
+                mPasswordView.setError("Invalid username or password!");
+                mPasswordView.requestFocus();
+
+            } else if (jsonObject.optString("access_token") != null) {
+
+                storeUserInfo(jsonObject);
+                finish();
+                Intent intent = new Intent(getBaseContext(), DashBoard.class);
                 startActivity(intent);
+
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }
+
+
+
+
+//            if (jsonObject.opt == null) {
+////
+//            }
+        }
+
+        private void storeUserInfo(JSONObject jsonObject) {
+
+            String  tokenType = "";
+            String expiresIn = "";
+            String accessToken = "";
+            String refreshToken = "";
+
+            try {
+                tokenType = jsonObject.getString(getString(R.string.pref_access_token_key));
+                expiresIn = jsonObject.getString(getString(R.string.pref_expires_in_key));
+                accessToken = jsonObject.getString(getString(R.string.pref_access_token_key));
+                refreshToken = jsonObject.getString(getString(R.string.pref_refresh_token_key));
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            // Store data In Preference
+//                    storeData(responseJsonObject);
+            SharedPreferences pref = getSharedPreferences(UserEntry.TABLE_NAME, 0);
+            SharedPreferences.Editor prefEditor = pref.edit();
+            prefEditor.putString(getString(R.string.pref_username_key), mEmail);
+            prefEditor.putString(getString(R.string.pref_password_key), mPassword);
+            prefEditor.putString(getString(R.string.pref_token_type_key), tokenType);
+            prefEditor.putString(getString(R.string.pref_expires_in_key), expiresIn);
+            prefEditor.putString(getString(R.string.pref_access_token_key), accessToken);
+            prefEditor.putString(getString(R.string.pref_refresh_token_key),refreshToken );
+            prefEditor.putBoolean(getString(R.string.pref_login_status), true);
+
+            prefEditor.commit();
+
         }
 
         @Override

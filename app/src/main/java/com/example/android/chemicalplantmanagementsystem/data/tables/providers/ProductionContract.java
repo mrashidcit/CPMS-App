@@ -119,7 +119,11 @@ public class ProductionContract {
         }
 
 
-    }
+    } // end ProductionEntry
+
+    public final static String PENDING_PRODUCTION = "pending";
+    public final static String APPRVOED_PRODUCTION = "approved";
+    public final static String COMPLETED_PRODUCTION = "completed";
 
 
 

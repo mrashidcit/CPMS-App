@@ -9,7 +9,8 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCOUNT_MANAGER"
+    <uses-permission
+        android:name="android.permission.ACCOUNT_MANAGER"
         tools:ignore="ProtectedPermissions" />
 
     <application
@@ -23,11 +24,11 @@
             android:name=".DashBoard"
             android:label="@string/title_activity_dash_board"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
 
         </activity>
         <activity android:name=".MainActivity" />
@@ -35,18 +36,22 @@
             android:name=".LoginActivity"
             android:label="@string/title_activity_login">
 
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN"/>-->
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+             <intent-filter>
+             <action android:name="android.intent.action.MAIN"/>
+             <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
 
         </activity>
         <activity
             android:name=".GenerateGatePassActivity"
             android:label="@string/title_activity_generate_gate_pass"
             android:parentActivityName=".DashBoard"
-            android:theme="@style/AppTheme"></activity>
-        <activity android:name=".TestUser">
+            android:theme="@style/AppTheme" />
+        <activity android:name=".TestUser"></activity>
+        <activity
+            android:name=".NotificationActivity"
+            android:label="@string/title_activity_notification"
+            android:parentActivityName=".DashBoard">
 
         </activity>
     </application>

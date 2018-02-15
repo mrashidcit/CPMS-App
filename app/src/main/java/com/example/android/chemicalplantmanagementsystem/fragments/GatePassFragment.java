@@ -107,7 +107,6 @@ public class GatePassFragment extends Fragment
 
 //        extractGatePassInfoFromJsonString();
 
-
         return gatePassView;
     }
 

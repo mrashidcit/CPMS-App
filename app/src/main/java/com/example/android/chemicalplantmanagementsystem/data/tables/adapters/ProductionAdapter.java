@@ -44,7 +44,6 @@ public class ProductionAdapter extends ArrayAdapter<Production> {
             TextView productionStatusView = (TextView) listItemView.findViewById(R.id.tv_status);
             TextView productionDescriptionView = (TextView) listItemView.findViewById(R.id.tv_description);
 
-
             productionNameView.setText(currentProductionItem.getProductionName());
             productionDescriptionView.setText(currentProductionItem.getDescription());
 

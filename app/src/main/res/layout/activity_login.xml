@@ -39,10 +39,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_username"
-                    android:text="muhammadmahindar@gmail.com"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:text="muhammadmahindar@gmail.com" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -56,12 +56,12 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_password"
                     android:imeActionId="6"
-                    android:text="secret"
                     android:imeActionLabel="@string/action_sign_in_short"
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:text="secret" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -74,6 +74,21 @@
                 android:text="@string/action_sign_in_short"
                 android:textStyle="bold" />
 
+
+            <TextView
+                android:layout_marginTop="50dp"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/tv_message_view"
+                android:textSize="24sp"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                 />
+
         </LinearLayout>
+
+
+
+
     </ScrollView>
 </LinearLayout>

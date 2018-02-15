@@ -27,8 +27,8 @@
                 android:id="@+id/nav_notification"
                 android:title="Notification" />
             <item
-                android:id="@+id/nav_reports"
-                android:title="Reports" />
+                android:id="@+id/nav_log_out"
+                android:title="Log Out" />
         </menu>
     </item>
 

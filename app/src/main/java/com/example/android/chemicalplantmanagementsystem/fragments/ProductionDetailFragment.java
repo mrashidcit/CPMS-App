@@ -38,7 +38,7 @@ import java.util.HashMap;
  * create an instance of this fragment.
  */
 public class ProductionDetailFragment extends Fragment
-                        implements LoaderManager.LoaderCallbacks {
+        implements LoaderManager.LoaderCallbacks {
 
     private static final String LOG_TAG = ProductionDetailFragment.class.getSimpleName();
     private static final int PRODUCTION_GET_DATA = 6001;
@@ -98,14 +98,17 @@ public class ProductionDetailFragment extends Fragment
     public void onStart() {
         super.onStart();
         Log.v(LOG_TAG, "onStart()");
-//        fetchProductionInfo();
-        extractDataFromProductionJsonString();
-        showProductsInList();
+
+        fetchProductionInfo();
+//        extractDataFromProductionJsonString();
+//        showProductsInList();
 
     }
 
     // Show Product List after fetching data from the Network
     private void showProductsInList() {
+
+        clearProductsFromList();
 
         Integer[] mKeys = mProductHashMap.keySet().toArray(new Integer[mProductHashMap.size()]);
         Product product;
@@ -119,6 +122,18 @@ public class ProductionDetailFragment extends Fragment
 
     }
 
+
+
+    private void clearProductsFromList() {
+        int childCount = mProductContainerView.getChildCount();
+        for (int i = 2; i < childCount; i++) {
+
+            if (mProductContainerView.getChildAt(2) != null) {
+                mProductContainerView.removeViewAt(2);
+            }
+
+        }
+    }
 
     private void addProductToList(Product product) {
         LinearLayout productItemLinearLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.gate_pass_products_list_item, mViewGroup, false);
@@ -163,11 +178,46 @@ public class ProductionDetailFragment extends Fragment
                 Product product = new Product(id, name, qty);
 
                 mProductHashMap.put(id, product);
-                Log.v(LOG_TAG, "id, name , qty: " +
-                        product.getId() + " , " +
-                        product.getName() + " , " +
-                        product.getPivotQuantity()
-                );
+
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    // Extract Data that is Comming from network
+    private void extractDataFromProductionJsonString(String jsonString) {
+
+        JSONObject root;
+        JSONObject productionJsonObject;
+        JSONArray productsJsonArray;
+
+        try {
+            root = new JSONObject(jsonString);
+            productionJsonObject = root.getJSONObject(ProductionEntry.TABLE_NAME);
+
+
+
+            productsJsonArray = productionJsonObject.getJSONArray(ProductContract.ProductEntry.TABLE_NAME);
+
+            JSONObject productJson;
+            int id;
+            String name;
+            int qty;
+            for (int i = 0; i < productsJsonArray.length(); i++) {
+
+                productJson = productsJsonArray.getJSONObject(i);
+
+                id = productJson.getInt(ProductionEntry._ID);
+                name = productJson.getString(ProductionEntry.COLUMN_NAME);
+                qty = productJson.getJSONObject("pivot").getInt(ProductionEntry.PIVOT_QUANTITY);
+
+                Product product = new Product(id, name, qty);
+
+                mProductHashMap.put(id, product);
 
             }
 
@@ -218,44 +268,30 @@ public class ProductionDetailFragment extends Fragment
     public void onLoadFinished(Loader loader, Object data) {
         Log.v(LOG_TAG, "onLoadFinished()");
 
-        if (data == null ) {
+        if (data == null) {
             Log.v(LOG_TAG, "response data is null!");
             Toast.makeText(mContext, "Unable to connect to Server", Toast.LENGTH_LONG).show();
-        } else if(data.toString().isEmpty()) {
+        } else if (data.toString().isEmpty()) {
             Log.v(LOG_TAG, "response is empty!");
             Toast.makeText(mContext, "Unable to connect to Server", Toast.LENGTH_LONG).show();
         }
 
         String jsonString = data.toString();
 
-        Log.v(LOG_TAG, "jsonString: " + jsonString);
+        JSONObject root ;
 
-        return;
+        try {
+            root = new JSONObject(jsonString);
 
-////        JSONObject jsonResponse;
-////
-////        try {
-////
-////            jsonResponse = new JSONObject(jsonString);
-////
-////            String status = jsonResponse.optString("status");
-////
-////            if (status != null && status.equals("success")) {
-////
-////                Log.v(LOG_TAG, "status: " + "Successfully Saved!");
-////                Toast.makeText(mContext, "Successfully Saved!", Toast.LENGTH_LONG).show();
-////
-////            } else if (jsonResponse.optJSONArray(ProductContract.ProductEntry.TABLE_NAME) != null){
-////
-////            }
-//
-//
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        } finally {
-//            mLoaderManager.destroyLoader(PRODUCTION_GET_DATA);
-//        }
-//        mLoaderManager.destroyLoader(PRODUCTION_GET_DATA);
+            if (root.optJSONObject(ProductionEntry.TABLE_NAME) != null) {
+
+                extractDataFromProductionJsonString(jsonString);
+                showProductsInList();
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
     }
 

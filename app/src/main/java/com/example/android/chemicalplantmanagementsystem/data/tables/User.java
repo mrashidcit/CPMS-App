@@ -146,6 +146,7 @@ public class User {
         return  "Bearer " + access_token;
     }
 
+    // Read User From Json String and Return JSONObject
     public static JSONObject readUserFromJson(String userInfoJSONString, Context context) throws JSONException {
         JSONObject parent = new JSONObject(userInfoJSONString.toString());
 //        JSONObject userInfoJSON = parent;
@@ -182,5 +183,18 @@ public class User {
 
         return userInfoJSON;
     }
+
+
+    //
+    public static final Boolean isLoggedIn(Context mContext) {
+
+        Boolean loginStatus;
+
+        SharedPreferences pref = mContext.getSharedPreferences(UserEntry.TABLE_NAME, 0);
+        loginStatus = pref.getBoolean(mContext.getString(R.string.pref_login_status), false);
+        return loginStatus;
+
+    }
+
 
 }

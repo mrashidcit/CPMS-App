@@ -1,10 +1,12 @@
 package com.example.android.chemicalplantmanagementsystem;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.NavUtils;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -13,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.android.chemicalplantmanagementsystem.data.tables.providers.UserContract;
 import com.example.android.chemicalplantmanagementsystem.fragments.DailyProductionFragment;
 import com.example.android.chemicalplantmanagementsystem.fragments.GatePassDetailFragment;
 import com.example.android.chemicalplantmanagementsystem.fragments.GatePassEditorFragment;
@@ -41,20 +44,26 @@ public class DashBoard extends AppCompatActivity
 
         // Changing Title of the Activity
 
-        getSupportActionBar().setTitle("Production");
-        /** Starting GatePass Fragment
-          * Create new Fragment and transaction **/
-        Fragment newFragment = new ProductionFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        // Replace is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack
-        transaction.replace(R.id.fragment_container, newFragment);
-        transaction.addToBackStack(null);
-        // Commit the transaction
-        transaction.commit();
 
-        // Changing Title of the Activity
-        getSupportActionBar().setTitle("Gate Passes");
+        // Start Notification Activity
+//        Intent intent = new Intent(getBaseContext(), NotificationActivity.class);
+//        startActivity(intent);
+
+
+//        getSupportActionBar().setTitle("Production");
+//        /** Starting GatePass Fragment
+//          * Create new Fragment and transaction **/
+//        Fragment newFragment = new ProductionFragment();
+//        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//        // Replace is in the fragment_container view with this fragment,
+//        // and add the transaction to the back stack
+//        transaction.replace(R.id.fragment_container, newFragment);
+//        transaction.addToBackStack(null);
+//        // Commit the transaction
+//        transaction.commit();
+//
+//        // Changing Title of the Activity
+//        getSupportActionBar().setTitle("Gate Passes");
 
     }
 
@@ -152,21 +161,25 @@ public class DashBoard extends AppCompatActivity
             title = "Gate Passes";
             getSupportActionBar().setTitle(title);
 
-        }
+        } else if (id == R.id.nav_notification) {
 
-//        if (id == R.id.nav_camera) {
-//            // Handle the camera action
-//        } else if (id == R.id.nav_gallery) {
-//
-//        } else if (id == R.id.nav_slideshow) {
-//
-//        } else if (id == R.id.nav_manage) {
-//
-//        } else if (id == R.id.nav_share) {
-//
-//        } else if (id == R.id.nav_send) {
-//
-//        }
+            Intent intent = new Intent(getBaseContext(), NotificationActivity.class);
+
+            startActivity(intent);
+
+        }else if (id == R.id.nav_log_out) {
+
+            // Log out user
+            SharedPreferences pref = getSharedPreferences(UserContract.UserEntry.TABLE_NAME, 0);
+            SharedPreferences.Editor prefEditor = pref.edit();
+            prefEditor.putBoolean(getString(R.string.pref_login_status), false);
+            prefEditor.commit();
+
+            Intent newIntent = new Intent(getBaseContext(), LoginActivity.class);
+
+            startActivity(newIntent);
+
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
