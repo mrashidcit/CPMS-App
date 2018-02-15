@@ -386,9 +386,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected JSONObject doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
-
-
-
             mMessageView.setText(""); // Make Message View Blank
 
             Boolean status = false;

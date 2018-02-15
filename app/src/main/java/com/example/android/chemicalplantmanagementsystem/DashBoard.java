@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.android.chemicalplantmanagementsystem.data.tables.User;
 import com.example.android.chemicalplantmanagementsystem.data.tables.providers.UserContract;
 import com.example.android.chemicalplantmanagementsystem.fragments.DailyProductionFragment;
 import com.example.android.chemicalplantmanagementsystem.fragments.GatePassDetailFragment;
@@ -67,7 +68,18 @@ public class DashBoard extends AppCompatActivity
 
     }
 
-//    @Override
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        Boolean loginStatus = User.isLoggedIn(getBaseContext());
+        if (loginStatus == false) {
+            finish();
+        }
+
+    }
+
+    //    @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
