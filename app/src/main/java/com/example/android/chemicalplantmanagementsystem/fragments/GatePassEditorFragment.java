@@ -7,6 +7,7 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,7 +50,7 @@ import java.util.HashMap;
  * create an instance of this fragment.
  */
 public class GatePassEditorFragment extends Fragment
-                    implements android.support.v4.app.LoaderManager.LoaderCallbacks{
+                    implements  android.support.v4.app.LoaderManager.LoaderCallbacks{
 
     public static final String LOG_TAG = GatePassEditorFragment.class.getSimpleName();
     private static final int GATEPASS_EDITOR_LOADER_ID = 1002;
@@ -85,7 +86,6 @@ public class GatePassEditorFragment extends Fragment
 
     private JSONArray mProductsJsonArray;
     private JSONArray mMaterialJsonArray;
-
 
     private GatePass mGatePass;
     private Context mContext;
@@ -786,4 +786,6 @@ public class GatePassEditorFragment extends Fragment
     public void onLoaderReset(android.support.v4.content.Loader loader) {
 
     }
+
+
 }
