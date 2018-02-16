@@ -12,7 +12,10 @@ public class Api {
     public static final int CODE_POST_REQUEST = 1025;
     public static final int CODE_PUT_REQUEST = 1026;
 
+    public static final int CLIENT_ID = 1;
     public static final String CLIENT_SECRET = "yC1y6EZ4nFgxN5QKYoNfR0Mm7RQPldFzwNY6HoJ6";
+    public static final String CLIENT_GRANT_TYPE = "password";
+    public static final String CLIENT_SCOPE = "*";
 
     public static final String ROOT_URL = "http://192.168.1.36:8000";
 

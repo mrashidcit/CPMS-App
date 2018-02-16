@@ -373,10 +373,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         UserLoginTask(String email, String password) {
 
             // Default Values
-            mClientId = 1;
+            mClientId = Api.CLIENT_ID;
             mClientSecret = Api.CLIENT_SECRET;
-            mGrantType = "password";
-            mScope = "*";
+            mGrantType = Api.CLIENT_GRANT_TYPE;
+            mScope = Api.CLIENT_SCOPE;
 
             mEmail = email;
             mPassword = password;
