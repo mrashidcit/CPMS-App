@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:background="@color/colorBackground"
+    android:background="#a9adec"
     >
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -36,7 +36,7 @@
                 android:orientation="horizontal">
 
                 <android.support.v7.widget.CardView
-                    style="@style/CardView.Dark"
+
                     android:id="@+id/cv_new_gate_pass"
                     android:layout_width="160dp"
                     android:layout_height="190dp"
@@ -45,6 +45,7 @@
                     android:foreground="?android:attr/selectableItemBackground">
 
                     <LinearLayout
+                        android:background="@color/cardViewColor"
                         android:id="@+id/ll_new_gate_pass"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -78,7 +79,7 @@
                             android:gravity="center"
                             android:padding="5dp"
                             android:text="Issure GatePass with Item &amp; Products Info."
-                            android:textColor="@android:color/darker_gray" />
+                             />
 
 
                     </LinearLayout>
@@ -87,7 +88,6 @@
                 </android.support.v7.widget.CardView>
 
                 <android.support.v7.widget.CardView
-                    style="@style/CardView.Dark"
                     android:layout_width="160dp"
                     android:layout_height="190dp"
                     android:layout_margin="10dp"
@@ -96,6 +96,7 @@
                     android:foreground="?android:attr/selectableItemBackground">
 
                     <LinearLayout
+                        android:background="@color/cardViewColor"
                         android:id="@+id/ll_new_daily_production"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -156,6 +157,7 @@
                     android:foreground="?android:attr/selectableItemBackground">
 
                     <LinearLayout
+                        android:background="@color/cardViewColor"
                         android:id="@+id/ll_productions"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -206,6 +208,7 @@
                     android:foreground="?android:attr/selectableItemBackground">
 
                     <LinearLayout
+                        android:background="@color/cardViewColor"
                         android:id="@+id/ll_gate_passes"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -264,6 +267,7 @@
                     android:foreground="?android:attr/selectableItemBackground">
 
                     <LinearLayout
+                        android:background="@color/cardViewColor"
                         android:id="@+id/ll_notifications"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
