@@ -17,7 +17,7 @@ public class Api {
     public static final String CLIENT_GRANT_TYPE = "password";
     public static final String CLIENT_SCOPE = "*";
 
-    public static final String ROOT_URL = "http://192.168.1.36:8000";
+    public static final String ROOT_URL = "http://192.168.1.3:8000";
 
     public static final String API_ROOT_URL;
 
